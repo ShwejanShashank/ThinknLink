@@ -9,6 +9,9 @@ const Home = ({ socket }) => {
 
     const createRoom = () => {
         if (!username) return alert("Enter your name!");
+        localStorage.setItem("username", username)
+        console.log(localStorage.getItem("username"));
+
         const newRoomId = uuidv4().slice(0, 6); // Short room ID
         socket.emit("create-room", { roomId: newRoomId, username });
         navigate(`/game/${newRoomId}?username=${username}`);
@@ -21,16 +24,21 @@ const Home = ({ socket }) => {
             alert("Enter name and room ID!");
             return;
         }
+        localStorage.setItem("username", username);
+        console.log(localStorage.getItem("username"));
+
+
     
         socket.emit("join-room", { roomId, username }, (response) => {
             if (response && !response.success) {
                 alert(response.message);
                 return;
             }
+
+
             navigate(`/game/${roomId}?username=${username}`);
         });
     };
-
     return (
         <div style={{ textAlign: "center", marginTop: "50px" }}>
             <h1>ThinkNLink</h1>
@@ -38,7 +46,8 @@ const Home = ({ socket }) => {
                 type="text" 
                 placeholder="Enter your name" 
                 value={username} 
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => setUsername(e.target.value)
+                }
             />
             <br />
             <button onClick={createRoom}>Create Room</button>
