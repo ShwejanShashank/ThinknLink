@@ -6,13 +6,17 @@ const Game = ({ socket }) => {
     const { roomId } = useParams();
     const location = useLocation();
     const navigate = useNavigate();
-    const username = new URLSearchParams(location.search).get("username");
+    var username = localStorage.getItem("username");
+
+    const isNextRound = new URLSearchParams(location.search).get("is-next-round");
+
 
     const [players, setPlayers] = useState([]);
     const [scores, setScores] = useState({}); // Track player scores
     const [timer, setTimer] = useState(null);
     const [timeLeft, setTimeLeft] = useState(null);
     const [submitted, setSubmitted] = useState(false);
+    const [nextRound, setNextRound] = useState(false);
     const [words, setWords] = useState([]);
     const [chain, setChain] = useState([]);
     const [newWord, setNewWord] = useState("");
@@ -23,26 +27,60 @@ const Game = ({ socket }) => {
     const [isCreator, setIsCreator] = useState(false);
     const chatBoxRef = useRef(null);
 
+
+    const newScores = {};
+
+
+
+    useEffect(() => {
+        console.log("-------->", {isNextRound});
+        setTimeout(() => {
+            if (isNextRound) {
+                // Only run this once
+                socket.emit("next-round-game", { roomId });
+                // setScores(newScores);
+            }
+        }, 1000);
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isNextRound]);
+
     useEffect(() => {
         window.history.replaceState(null, "", "/");
-
+        username = localStorage.getItem("username");
         socket.emit("join-room", { roomId, username });
 
         socket.on("update-players", (playerList) => {
             setPlayers(playerList);
-            const newScores = {};
-            playerList.forEach((player) => {
-                newScores[player] = scores[player] || 0; // Initialize score if not set
-            });
-            setScores(newScores);
+
+            // playerList.forEach((player) => {
+            //     if(newScores[player]!=null)
+            //     newScores[player] = scores[player]; // Initialize score if not set
+            //     else
+            //     newScores[player] = 0;
+            // });
+
+            
+
+            
+
+
+            // setScores(newScores);
         });
+
+
+            
+
 
         socket.on("update-scores", (newScores) => {
             setScores(newScores);
         });
 
-        socket.on("update-rounds", ({ rounds, creator }) => {
+        socket.on("update-rounds", ({ rounds}) => {
             setRounds(rounds);
+        });
+
+        socket.on("creator", ({ creator }) => {
             setIsCreator(socket.id === creator);
         });
 
@@ -51,6 +89,19 @@ const Game = ({ socket }) => {
             setChain(wordPair);
             setGameStarted(true);
         });
+
+        // socket.on("game-state", (state) => {
+        //     setWords(state.words);
+        //     setChain(state.words);
+        //     setChatMessages(state.chat);
+        //     setScores(state.scores);
+        //     // setTimeLeft(state.timeLeft);
+        //     setGameStarted(true);
+        
+        //     // if (state.submittedPlayers.includes(username)) {
+        //     //     setSubmitted(true);
+        //     // }
+        // });
 
         socket.on("game-words", (wordPair) => {
             setWords(wordPair);
@@ -76,10 +127,20 @@ const Game = ({ socket }) => {
             }, 1000));
         });
 
+        // if(isNextRound){
+        //     socket.emit("next-round-game", { roomId });
+        //     setScores(newScores);
+        // }
+
+
+
         socket.on("next-round", (wordPair) => {
+            clearInterval(timer);
             setWords(wordPair);
             setChain(wordPair);
             setSubmitted(false);
+            setNextRound(true);
+            navigate(`/results/${roomId}?playersList=${players}`);
         });
 
         socket.on("results", (submissions) => {
@@ -150,9 +211,21 @@ const Game = ({ socket }) => {
         setSubmitted(true);
     };
 
+    // const sendMessage = () => {
+    //     if (chatInput.trim() !== "") {
+    //         socket.emit("send-chat-message", { roomId, username, message: chatInput });
+    //         setChatInput("");
+    //     }
+    // };
+
     const sendMessage = () => {
         if (chatInput.trim() !== "") {
-            socket.emit("send-chat-message", { roomId, username, message: chatInput });
+            socket.emit("send-chat-message", {
+                roomId,
+                username,
+                message: chatInput,
+                timestamp: new Date().toLocaleTimeString() // Add timestamp here
+            });
             setChatInput("");
         }
     };
@@ -163,11 +236,14 @@ const Game = ({ socket }) => {
             <div style={{ width: "200px", textAlign: "left", marginRight: "20px", padding: "10px", borderRight: "2px solid black" }}>
                 <h3>Players & Scores</h3>
                 <ul style={{ listStyle: "none", padding: 0 }}>
-                    {players.map((player, index) => (
-                        <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
-                            {player} - <strong>{scores[player] || 0}</strong>
-                        </li>
-                    ))}
+                        {[...players]
+                            .sort((a, b) => (scores[b] || 0) - (scores[a] || 0))
+                            .map((player, index) => (
+                              <li key={index} style={{ marginBottom: "10px", fontSize: "18px" }}>
+                                {player} - <strong>{scores[player] || 0}</strong>
+                              </li>
+                        ))}
+                        
                 </ul>
             </div>
 
@@ -177,7 +253,7 @@ const Game = ({ socket }) => {
 
                 {timeLeft !== null && <h4>Time Left: {timeLeft}s</h4>}
 
-                {!gameStarted ? (
+                {!gameStarted && !isNextRound ? (
                     <div>
                         <h3>Number of Rounds:</h3>
                         <input type="number" value={rounds} onChange={handleSetRounds} disabled={!isCreator} />
@@ -217,7 +293,7 @@ const Game = ({ socket }) => {
                         <p key={index}>
                             <strong>{msg.username}:</strong> {msg.message} 
                             <span style={{ fontSize: "10px", color: "gray", marginLeft: "10px" }}>
-                                {new Date().toLocaleTimeString()}
+                            {msg.timestamp}
                             </span>
                         </p>
                     ))}

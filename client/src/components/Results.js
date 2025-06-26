@@ -1,10 +1,11 @@
 
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 
 const Results = ({ socket }) => {
     const { roomId } = useParams();
+    const location = useLocation();
     const [submissions, setSubmissions] = useState([]);
     const [shuffledSubmissions, setShuffledSubmissions] = useState([]);
     const [selectedChain, setSelectedChain] = useState(null);
@@ -13,6 +14,17 @@ const Results = ({ socket }) => {
     const [revealed, setRevealed] = useState(false);
     const [userVotes, setUserVotes] = useState({});
     const [username, setUsername] = useState("");
+
+    const [gameOver, setGameOver] = useState(false);
+
+    const playersList = new URLSearchParams(location.search).get("playersList");
+
+
+    const [isClicked, setIsClicked] = useState(false);
+
+    const hasShuffled = useRef(false);
+
+    const navigate = useNavigate();
 
     const [scores, setScores] = useState({});
     const [playersVoted, setPlayersVoted] = useState(0);
@@ -23,13 +35,23 @@ const Results = ({ socket }) => {
     useEffect(() => {
         socket.emit("get-results", { roomId });
 
+        // socket.on("results", (data) => {
+        //     setSubmissions(data);
+
+
+        //     // Shuffle chains for anonymity
+        //     const shuffled = [...data].sort(() => Math.random() - 0.5);
+        //     setShuffledSubmissions(shuffled);
+        // });
+
         socket.on("results", (data) => {
             setSubmissions(data);
-
-
-            // Shuffle chains for anonymity
-            const shuffled = [...data].sort(() => Math.random() - 0.5);
-            setShuffledSubmissions(shuffled);
+            console.log("SUbmissions: ", data);
+            if (!hasShuffled.current) {
+                const shuffled = [...data].sort(() => Math.random() - 0.5);
+                setShuffledSubmissions(shuffled);
+                hasShuffled.current = true;
+            }
         });
 
         socket.on("vote-update", (voteData) => {
@@ -52,6 +74,14 @@ const Results = ({ socket }) => {
             console.log(userScores);
             setScores(userScores);
 
+        });
+
+
+        socket.on("game-over", () => {
+            setGameOver(true);
+            setTimeout(() => {
+                navigate(`/final-scores/${roomId}`);
+            }, 3000);
         });
 
 
@@ -78,9 +108,65 @@ const Results = ({ socket }) => {
         
     };
 
+
+
+
+       const handleNextRound = () => {
+
+        
+        setTimeout(() => {
+            if(!gameOver){
+            setRevealed(false);
+            setSelectedChain(null);
+            setVoted(false);
+            setUserVotes({});
+            setVotes({});
+            setIsClicked(true);
+            console.log("Button Clicked")
+            
+            navigate(`/game/${roomId}?is-next-round=${true}&&old-players-list=${playersList}`);
+    }
+
+        }, 3000);
+
+        };
+
+
+    if(revealed){
+        handleNextRound(); // Automatically run on mount
+    }
+
+
     const handleRevealVotes = () => {
         socket.emit("reveal-votes", { roomId });
     };
+
+
+    // // Next Round
+    // useEffect(() => {
+    //     socket.on("next-round", (newWords) => {
+    //         setRevealed(false);
+    //         setSelectedChain(null);
+    //         setVoted(false);
+    //         setUserVotes({});
+    //         setVotes({});
+    //         navigate(`/game/${roomId}`); // Redirect back to game
+    //     });
+    
+    //     socket.on("final-scores", (finalScoreMap) => {
+    //         console.log("Final Scores:", finalScoreMap);
+    //         // You can optionally display them in Results page
+    //     });
+    
+    //     return () => {
+    //         socket.off("next-round");
+    //         socket.off("final-scores");
+    //     };
+    // }, []);
+
+
+
+
 
 
     return (
@@ -103,7 +189,12 @@ const Results = ({ socket }) => {
                                     background: selectedChain === sub.chain ? "#d3f4ff" : (sub.username === localStorage.getItem("username") ? "#f0f0f0" : "white"),
                                     opacity: sub.username === localStorage.getItem("username") ? 0.5 : 1 // Grays out own chain
                                 }}
-                                onClick={() => !voted && sub.username !== localStorage.getItem("username") && setSelectedChain(sub.chain)}
+                                // onClick={() => !voted && sub.username !== localStorage.getItem("username") && setSelectedChain(sub.chain)}
+                                onClick={() => {
+                                    if (!voted && sub.username !== localStorage.getItem("username")) {
+                                        setSelectedChain(sub.chain);
+                                    }
+                                }}
                             >
                                 <span>{sub.chain.join(" → ")}</span>
                             </li>
@@ -126,6 +217,7 @@ const Results = ({ socket }) => {
                 </>
             ) : (
                 <>
+               
                     <h2>Final Results</h2>
                     <ul style={{ listStyle: "none", padding: 0 }}>
                         {shuffledSubmissions.map((sub, index) => (
@@ -141,17 +233,22 @@ const Results = ({ socket }) => {
                                 {userVotes[sub.chain] && (
                                     <p style={{ fontSize: "14px", color: "gray" }}>
                                         Voted by: {userVotes[sub.chain].join(", ")}
-                                    </p>,
-                                    <p>
-                                        Score: {scores[sub.username]+"0"}
-                                        
+                                        Score: {scores[sub.username]}
                                     </p>
+                                    
                                 )}
+
+                                
 
                                 
                             </li>
                         ))}
+                            { <p>Next round starting in 10 seconds...</p>}
+                            
+
                     </ul>
+                    <button  onClick={handleNextRound}>Reveal Votes</button>
+                    
                 </>
             )}
         </div>
