@@ -1,0 +1,317 @@
+/* Light & Dark Theme Support */
+:root {
+    --bg: #f9fafb;
+    --fg: #1f2937;
+    --card: #ffffff;
+    --primary: #7c3aed;
+    --secondary: #22c55e;
+    --border: #e5e7eb;
+    --gray: #6b7280;
+    --shadow: rgba(0, 0, 0, 0.05);
+    --muted: #d1d5db;
+    --progress-bg: #e0e0e0;
+    --progress-fill: #7c3aed;
+  }
+  
+  [data-theme="dark"] {
+    --bg: #18181b;
+    --fg: #f4f4f5;
+    --card: #27272a;
+    --primary: #a78bfa;
+    --secondary: #4ade80;
+    --border: #3f3f46;
+    --gray: #9ca3af;
+    --shadow: rgba(255, 255, 255, 0.05);
+    --muted: #4b5563;
+    --progress-bg: #3f3f46;
+    --progress-fill: #a78bfa;
+  }
+  
+  body {
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .game-container {
+    display: flex;
+    height: 100vh;
+    gap: 16px;
+    padding: 24px;
+    box-sizing: border-box;
+    background-color: var(--bg);
+    transition: background 0.3s;
+  }
+  
+  .sidebar, .chat {
+    width: 250px;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .sidebar h2, .chat h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: var(--primary);
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  
+  .avatar {
+    width: 32px;
+    height: 32px;
+    background: var(--primary);
+    color: white;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    font-weight: bold;
+  }
+  
+  .player-name {
+    flex-grow: 1;
+  }
+  
+  .score {
+    font-size: 14px;
+    color: var(--gray);
+  }
+  
+  .round-selector label {
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: block;
+  }
+  
+  .round-selector select,
+  .start-button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--primary);
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .main {
+    flex: 1;
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .room-id {
+    background: var(--primary);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+  }
+  
+  .timer {
+    color: var(--secondary);
+    font-weight: bold;
+  }
+  
+  .round-progress {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: var(--gray);
+  }
+  
+  .round-bar {
+    width: 120px;
+    height: 8px;
+    background: var(--progress-bg);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  
+  .round-bar-fill {
+    height: 100%;
+    background: var(--progress-fill);
+    transition: width 0.3s ease;
+  }
+  
+  .chain-title {
+    font-size: 18px;
+    color: var(--gray);
+  }
+  
+  .chain-box {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  
+  .chain-word {
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    background: var(--border);
+    color: var(--fg);
+    transition: transform 0.2s ease;
+  }
+  
+  .chain-word.endpoint {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .arrow {
+    font-size: 20px;
+    color: var(--gray);
+    font-weight: bold;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  
+  .word-input {
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 16px;
+  }
+  
+  .word-input:disabled {
+    background: var(--border);
+    color: var(--gray);
+    cursor: not-allowed;
+  }
+  
+  .add-btn, .submit-btn {
+    padding: 10px 14px;
+    border: none;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+  }
+  
+  .add-btn {
+    background: var(--secondary);
+    color: white;
+  }
+  
+  .submit-btn {
+    background: var(--primary);
+    color: white;
+  }
+  
+  .add-btn:disabled, .submit-btn:disabled {
+    background: var(--muted);
+    cursor: not-allowed;
+  }
+  
+  .waiting {
+    color: var(--gray);
+    margin-top: 20px;
+    font-size: 14px;
+  }
+  
+  .chat-box {
+    height: 200px;
+    overflow-y: auto;
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  
+  .chat-msg {
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+  
+  .timestamp {
+    font-size: 10px;
+    color: var(--gray);
+    margin-left: 10px;
+  }
+  
+  .chat-input {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  
+  .chat-input button {
+    padding: 8px 12px;
+    border: none;
+    background: var(--primary);
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .copy-toast {
+    position: fixed;
+    top: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--toast-bg);
+    color: var(--toast-text);
+    padding: 10px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-weight: 600;
+    z-index: 999;
+    animation: fadeOut 1.5s ease-in-out forwards;
+  }
+  
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+

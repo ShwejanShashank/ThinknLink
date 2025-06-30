@@ -1,0 +1,126 @@
+/* Home.css */
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+  background-image: url('bg.png');
+  background-repeat: repeat;
+  background-size: contain;
+  background-position: center;
+  position: relative;
+}
+
+/* Optional: overlay to control opacity */
+.home-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  /* background-color: rgb(197, 195, 255); */
+  background-color: rgb(177, 177, 177);
+
+  opacity: 0.85; /* This makes the text appear lighter */
+  z-index: 0;
+}
+
+.home-card, .username-block, .home-title, .home-logo {
+  position: relative;
+  z-index: 1; /* Bring content above the overlay */
+}
+  
+  .home-logo {
+    width: 220px;
+    max-width: 90%;
+    margin-bottom: 30px;
+    object-fit: contain;
+  }
+  
+  .home-card {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 48px 132px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    min-width: 300px;
+  }
+  
+  .home-input {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  
+  .home-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #3a86ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .home-button:hover {
+    background-color: #265dd8;
+  }
+  
+  .home-button.secondary {
+    background-color: #8e44ad;
+  }
+  
+  .home-button.secondary:hover {
+    background-color: #6c3483;
+  }
+  
+  .divider {
+    height: 20px;
+  }
+
+  .username-block {
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 400px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .username-block label {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    display: block;
+    color: #333;
+  }
+  
+  .username-input {
+    /* width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #000000;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box; */
+
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+  }

@@ -1,3 +1,6 @@
+
+
+
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -74,6 +77,13 @@ io.on("connection", (socket) => {
         if (!rooms[roomId]) {
             if (typeof callback === "function") {
                 callback({ success: false, message: "Invalid Room ID! Room does not exist." });
+            }
+            return;
+        }
+
+        if (rooms[roomId].gameStarted) {
+            if (typeof callback === "function") {
+                callback({ success: false, message: "Game has already started. You can't join this room now." });
             }
             return;
         }
@@ -156,7 +166,7 @@ io.on("connection", (socket) => {
             rooms[roomId].words = getRandomWords();
             rooms[roomId].submissions = [];
             rooms[roomId].timerStarted = false;
-            io.to(roomId).emit("game-started", rooms[roomId].words);
+            io.to(roomId).emit("game-started", rooms[roomId].words, rooms[roomId].currentRound+1);
         }
     });
 
@@ -168,9 +178,23 @@ io.on("connection", (socket) => {
             rooms[roomId].submissions = [];
             rooms[roomId].timerStarted = false;
             rooms[roomId].playersVoted = new Set();
-            io.to(roomId).emit("game-started", rooms[roomId].words);
+            io.to(roomId).emit("game-started", rooms[roomId].words, rooms[roomId].currentRound+1);
 
+            console.log(rooms[roomId].players);
             console.log("------------------------------------------");
+
+            io.to(roomId).emit("update-players", Object.values(rooms[roomId].players));
+            io.to(socket.id).emit("update-scores", rooms[roomId].userScores);
+
+
+            io.to(roomId).emit("update-rounds", { rounds: rooms[roomId].rounds});
+            
+            io.to(socket.id).emit("chat-history", rooms[roomId].chat);
+
+            if (typeof callback === "function") {
+                callback({ success: true });
+            }
+
         
     });
 
@@ -241,7 +265,7 @@ io.on("connection", (socket) => {
                             // room.userVotes = {};
                             // room.playersVoted = new Set();
                             isNextRound = true;
-                            io.to(roomId).emit("next-round", room.words, isNextRound);
+                            io.to(roomId).emit("next-round", room.words);
                             
                             console.log("Players: ", rooms[roomId].players);
                         }
@@ -393,7 +417,6 @@ io.on("connection", (socket) => {
 server.listen(5001, () => {
     console.log("Server running on port 5001");
 });
-
 
 
 
