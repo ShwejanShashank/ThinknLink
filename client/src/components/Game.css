@@ -91,7 +91,7 @@
   
   .score {
     font-size: 14px;
-    color: var(--gray);
+    /* color: var(--gray); */
   }
   
   .round-selector label {
@@ -151,7 +151,7 @@
     gap: 10px;
     font-size: 14px;
     font-weight: bold;
-    color: var(--gray);
+    /* color: var(--gray); */
   }
   
   .round-bar {
@@ -170,7 +170,7 @@
   
   .chain-title {
     font-size: 18px;
-    color: var(--gray);
+    /* color: var(--gray); */
   }
   
   .chain-box {
@@ -197,7 +197,7 @@
   
   .arrow {
     font-size: 20px;
-    color: var(--gray);
+    /* color: var(--gray); */
     font-weight: bold;
   }
   

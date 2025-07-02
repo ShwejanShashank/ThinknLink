@@ -326,6 +326,8 @@ io.on("connection", (socket) => {
         rooms[roomId].playersVoted.add(username);
     
         io.to(roomId).emit("vote-update", rooms[roomId].votes);
+        io.to(roomId).emit("vote-count", rooms[roomId].playersVoted);
+
 
         console.log("votes: ", rooms[roomId].votes);
         console.log("uservotes: ", rooms[roomId].userVotes);

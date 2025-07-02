@@ -1,0 +1,265 @@
+/* Results.css - Styled to match ThinkNLink game theme */
+
+/* :root {
+    --primary: #7c3aed;
+    --primary-light: #ede9fe;
+    --secondary: #22c55e;
+    --background: #f9fafb;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --gray: #e5e7eb;
+    --border: #d1d5db;
+    --highlight: #dfd4ff;
+    --disabled: #f0f0f0;
+    --light: #ffffff;
+    --vote-bg: #f3f4f6;
+  }
+  
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--background);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+  }
+  
+  .results-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .results-container h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+  
+  .results-container h2 {
+    font-size: 1.6rem;
+    margin-top: 30px;
+    color: var(--primary);
+  }
+  
+  .results-container h3 {
+    font-size: 1.2rem;
+    margin: 20px 0;
+    color: var(--muted);
+  }
+  
+  .vote-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .vote-item {
+    padding: 15px 20px;
+    margin-bottom: 15px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--light);
+  }
+  
+  .vote-item:hover {
+    border-color: var(--primary);
+  }
+  
+  .vote-item.selected {
+    background-color: var(--highlight);
+    border-color: var(--primary);
+  }
+  
+  .vote-item.disabled {
+    background-color: var(--disabled);
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .results-buttons button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 10px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .results-buttons button:hover {
+    background-color: #6b21a8;
+  }
+  
+  .results-buttons button:disabled {
+    background-color: var(--muted);
+    cursor: not-allowed;
+  }
+  
+  .result-box {
+    padding: 15px 20px;
+    background: var(--vote-bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    text-align: left;
+  }
+  
+  .result-box strong {
+    color: var(--primary);
+  }
+  
+  .result-box p {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin: 4px 0 0;
+  }
+  
+  .next-round-hint {
+    margin-top: 10px;
+    /* color: var(--gray); 
+    font-style: italic;
+  } */
+
+  /* Results.css - Revamped with vibrant modern styling */
+
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --highlight: #38bdf8;
+    --background: #111827;
+    --card: #1f2937;
+    --border: #4b5563;
+    --text: #f9fafb;
+    --muted: #9ca3af;
+    --accent: #7c3aed;
+    --success: #22c55e;
+    --danger: #ef4444;
+  }
+  
+  body {
+    background-color: var(--background);
+    color: var(--text);
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .results-container {
+    max-width: 900px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+    background: transparent;
+  }
+  
+  .results-container h1,
+  .results-container h2,
+  .results-container h3 {
+    margin: 10px 0;
+    color: var(--text);
+  }
+  
+  .vote-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+  }
+  
+  .vote-item {
+    background-color: var(--card);
+    border: 2px solid var(--border);
+    border-radius: 14px;
+    margin-bottom: 15px;
+    padding: 18px 24px;
+    font-size: 1.1rem;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+  }
+  
+  .vote-item:hover {
+    border-color: var(--highlight);
+    background: rgba(56, 189, 248, 0.05);
+  }
+  
+  .vote-item.selected {
+    border-color: var(--highlight);
+    background: linear-gradient(135deg, var(--highlight), #60a5fa);
+    color: #fff;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+  }
+  
+  .vote-item.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  
+  .results-buttons {
+    margin-top: 20px;
+  }
+  
+  .results-buttons button {
+    padding: 12px 24px;
+    background-color: var(--highlight);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .results-buttons button:hover {
+    background-color: #0ea5e9;
+  }
+  
+  .results-buttons button:disabled {
+    background-color: var(--border);
+    cursor: not-allowed;
+  }
+  
+  .result-box {
+    background-color: var(--card);
+    border: 2px solid var(--accent);
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    color: var(--text);
+    text-align: left;
+  }
+  
+  .result-box strong {
+    color: var(--highlight);
+    font-size: 1.2rem;
+  }
+  
+  .result-box p {
+    font-size: 0.95rem;
+    margin-top: 6px;
+    color: var(--muted);
+  }
+  
+  .next-round-hint {
+    font-style: italic;
+    color: var(--muted);
+    margin-top: 20px;
+    font-size: 0.9rem;
+  }
+  
+  .vote-status {
+    margin: 10px 0;
+    font-size: 0.95rem;
+    color: var(--muted);
+  }
