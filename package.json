@@ -2,11 +2,15 @@
   "name": "thinknlink",
   "version": "1.0.0",
   "scripts": {
-    "start": "node server.js",
+    "start": "node server/server.js",
     "build": "npm run build --prefix client",
     "postinstall": "npm install --prefix client && npm run build"
+  },
+  "engines": {
+    "node": "18.x"
   }
 }
+
 {
   "dependencies": {
     "@emotion/react": "^11.14.0",
