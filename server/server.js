@@ -1,6 +1,3 @@
-
-
-
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
@@ -20,11 +17,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client/build/index.html"));
 });
 
-// ✅ Socket.IO connection
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-  // your socket.on("...") handlers go here
-});
 
 const wordList = [
     "Dog", "Car", "Tree", "Book", "Phone", "Table", "Water", "Light",
