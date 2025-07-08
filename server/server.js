@@ -12,11 +12,18 @@ const app = express();
 app.use(cors());
 
 const server = http.createServer(app);
-const io = new Server(server, {
-    cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
-    }
+// ✅ Serve frontend static files
+app.use(cors());
+app.use(express.static(path.join(__dirname, "client/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client/build/index.html"));
+});
+
+// ✅ Socket.IO connection
+io.on("connection", (socket) => {
+  console.log("User connected:", socket.id);
+  // your socket.on("...") handlers go here
 });
 
 const wordList = [
