@@ -28,6 +28,147 @@ const wordList = [
     "Jacket", "Mirror", "Fence", "Cloud", "Sky", "Ocean", "Toothbrush"
 ];
 
+const wordCategories = {
+    animals: ["cat", "dog", "lion", "tiger", "elephant", "giraffe", "zebra",
+        "monkey", "panda", "bear", "rabbit", "horse", "kangaroo", "cow", "sheep",
+        "goat", "deer", "camel", "wolf", "fox", "leopard", "cheetah", "hippopotamus",
+        "rhinoceros", "crocodile", "alligator", "dolphin", "whale", "shark", "penguin",
+        "ostrich", "eagle", "parrot", "owl", "bat", "chicken", "duck", "mouse", 
+        "rat", "pig", "donkey", "turkey", "bee", "ant", "spider"],
+    food: [
+        "pizza", "burger", "fries", "biryani", "pasta",
+        "sandwich", "noodles", "tacos", "sushi", "dumplings",
+        "hotdog", "falafel", "ramen", "pancakes", "waffles",
+        "curry", "steak", "salad", "bacon", "meatballs",
+        "chicken wings", "fried rice", "mashed potatoes", "spring rolls", "kebab",
+        "lasagna", "butter chicken",
+        "grilled cheese", "omelette", "mac and cheese"
+      ],
+    fruits: [
+        "mango", "apple", "pineapple", "banana", "grape",
+        "orange", "strawberry", "watermelon", "papaya", "kiwi",
+        "pomegranate", "cherry", "blueberry", "pear", "guava",
+        "peach", "plum", "lychee", "lemon",
+        "coconut", "blackberry",
+        "custard apple", "grapefruit"
+      ],
+    celebrities: ["Taylor Swift", "Cristiano Ronaldo", "Snoop Dogg",
+        "Tom Cruise", "John Cena", "Donald trump", "Elon Musk", "Jackie Chan",
+        "Selena Gomez", "Michael Jackson", "Bruce Lee",
+        "Will Smith", "Jennifer Lopez",
+        "Justin Bieber", "Virat Kohli", "Kim Kardashian",
+        "Rihanna", "Messi", "Lady Gaga",
+        "Newton", "Einstein", "Stephen Hawking", "Nikola Tesla",
+        "Galileo"
+    ],
+    countries: [
+        "United States", "India", "China", "France",
+        "Germany", "Russia", "Japan", "Australia",
+        "Brazil", "Italy", "Mexico",
+        "Saudi Arabia", "South Africa", "Egypt",
+        "Switzerland", "Thailand",
+        "Pakistan", "Nigeria"
+      ],
+    colors: [
+        "Red", "Blue", "Green", "Yellow",
+        "Purple", "Pink", "Black", "White", "Gray",
+        "Brown", "Cyan", "Magenta",
+        "Maroon",
+        "Violet"
+      ],
+    sports: [
+        "Soccer", "Basketball", "Cricket", "Tennis", "Baseball",
+        "Hockey", "Table Tennis", "Volleyball", "Golf",
+        "Boxing", "Wrestling", "Skating", "Swimming",
+        "Cycling", "Karate", "Chess", "Skiing", "Formula 1",
+      ],
+    vehicles: [
+        "Car", "Bus", "Bicycle", "Motorcycle", "Truck",
+        "Scooter", "Train", "Airplane", "Helicopter", "Boat",
+        "Ship", "Van", "Tractor", "Ambulance",
+        "Taxi", "Skateboard", "Yacht", "Rocket"
+      ],
+    occupations: [
+        "Doctor", "Teacher", "Engineer", "Lawyer", "Chef",
+        "Police Officer", "Firefighter", "Nurse", "Pilot", "Farmer",
+        "Artist", "Musician", "Actor", "Scientist", "Photographer",
+        "Dentist", "Architect", "Mechanic", "Electrician", "Plumber",
+        "Writer", "Journalist", "Software Developer", "Cashier"
+      ],
+    householdItems: [
+        "Chair", "Table", "Sofa", "Bed", "Pillow",
+        "Blanket", "Lamp", "Mirror",
+        "Clock","Curtain", "Carpet", "Broom",
+        "Bucket", "Mop", "Towel", "Comb"
+      ],
+    electronics: [
+        "Television", "Refrigerator", "Washing Machine", "Microwave", "Oven",
+        "Toaster", "Air Conditioner", "Fan", "Vacuum Cleaner",
+        "Hair Dryer", "Electric Kettle", "Blender",
+        "Laptop", "Smartphone", "Smartwatch",
+        "Printer", "Camera", "Speaker", "Projector",
+        "Earphones","Dishwasher", "Coffee Maker","Rice Cooker",
+        "Security Camera", "Alarm Clock",
+        "Electric Toothbrush", "calendar", "calculator", "torch"
+      ],
+    alcoholAndRelated: [
+        "Wine", "Whiskey", "Vodka", "Tequila",
+        "Champagne", "Beer",
+        "Cocktail", "Mojito",
+        "Cigarette", "Cigar", "Hookah", "Tobacco"
+      ],
+    instruments: [
+        "Piano", "Guitar", "Violin", "Drums", "Flute",
+        "Trumpet", "Saxophone"
+      ],
+    bodyParts: [
+        "Head", "Hair", "Face", "Eyes",
+        "Ears", "Nose", "Lips", "Teeth", "Tongue",
+        "Neck", "Hands",
+        "Fingers", "Chest", "Stomach", "Back", "Waist",
+        "Hips", "Legs", "Feet",
+        "Heart", "Lungs", "Brain", "Skin"
+    ],
+    mythicalCharacters: [
+        "Zeus", "Hercules", "Thor",
+        "Hades", "Jesus", "Buddha"
+    ],
+    comicCharacters: [
+        "Superman", "Batman", "Spider-Man", "Iron Man",
+        "Captain America", "Hulk", "Joker", "Aquaman", "Venom", "Mickey Mouse"
+    ],
+    socialMediaPlatforms: [
+        "Facebook", "Instagram", "Twitter", "TikTok", "Snapchat",
+        "YouTube", "WhatsApp", "Reddit", "LinkedIn",
+        "Discord", "Telegram", "Messenger"
+    ]
+
+  };
+
+  const getRandomWordPair = (categories) => {
+    const categoryKeys = Object.keys(categories);
+  
+    // Pick two different random category indices
+    let idx1 = Math.floor(Math.random() * categoryKeys.length);
+    let idx2;
+    do {
+      idx2 = Math.floor(Math.random() * categoryKeys.length);
+    } while (idx2 === idx1); // ensure different categories
+  
+    const cat1 = categoryKeys[idx1];
+    const cat2 = categoryKeys[idx2];
+  
+    // Pick random word from each category
+    const word1 = categories[cat1][Math.floor(Math.random() * categories[cat1].length)];
+    const word2 = categories[cat2][Math.floor(Math.random() * categories[cat2].length)];
+  
+    return [word1, word2];
+  }
+
+  const [startWord, endWord] = getRandomWordPair(wordCategories);
+  console.log("Start:", startWord);
+  console.log("End:", endWord);
+
 let rooms = {};
 
 
@@ -160,10 +301,16 @@ io.on("connection", (socket) => {
     });
 
     socket.on("start-game", ({ roomId }) => {
+        // if(Object.keys(rooms[roomId].players).length <= 2){
+            
+        //     io.to(roomId).emit("cannot-start-game");
+        //     return;
+        // }
+
         if (rooms[roomId] && socket.id === rooms[roomId].creator) {
             rooms[roomId].currentRound = 0;
             rooms[roomId].gameStarted = true;
-            rooms[roomId].words = getRandomWords();
+            rooms[roomId].words = getRandomWordPair(wordCategories);
             rooms[roomId].submissions = [];
             rooms[roomId].timerStarted = false;
             io.to(roomId).emit("game-started", rooms[roomId].words, rooms[roomId].currentRound+1);
@@ -254,7 +401,7 @@ io.on("connection", (socket) => {
 
                         if (room.currentRound < room.rounds) {
                             room.currentRound++;
-                            room.words = getRandomWords();
+                            room.words = getRandomWordPair(wordCategories);
 
                             console.log("Current Round: ",room.currentRound);
                             console.log("Total Rounds: ",room.rounds);

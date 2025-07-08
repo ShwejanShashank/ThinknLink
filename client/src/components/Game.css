@@ -1,16 +1,18 @@
 /* Light & Dark Theme Support */
 :root {
     --bg: #f9fafb;
-    --fg: #1f2937;
+    /* --fg: #1f2937; */
     --card: #ffffff;
     --primary: #7c3aed;
     --secondary: #22c55e;
     --border: #e5e7eb;
     --gray: #6b7280;
-    --shadow: rgba(0, 0, 0, 0.05);
+    --shadow: rgb(206, 206, 206);
     --muted: #d1d5db;
     --progress-bg: #e0e0e0;
     --progress-fill: #7c3aed;
+    --yellow: rgb(244, 193, 66);
+    --blue: #7c3aed;
   }
   
   [data-theme="dark"] {
@@ -33,8 +35,13 @@
     font-family: "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
+    background-image: url('./tomato.png');
+    /* background-size: cover;
+    background-position: center;
+    background-attachment: fixed; */
+    
   }
-  
+
   .game-container {
     display: flex;
     height: 100vh;
@@ -43,6 +50,7 @@
     box-sizing: border-box;
     background-color: var(--bg);
     transition: background 0.3s;
+    background: linear-gradient(180deg, #8a4ff0, #3d127e);
   }
   
   .sidebar, .chat {
@@ -57,9 +65,10 @@
   }
   
   .sidebar h2, .chat h3 {
-    margin-top: 0;
+    margin-top: 0px;
     font-size: 20px;
     color: var(--primary);
+    margin-bottom: 0px;
   }
   
   .sidebar ul {
@@ -71,7 +80,7 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 8px;
+    /* margin-bottom: 8px; */
   }
   
   .avatar {
@@ -98,6 +107,7 @@
     font-size: 14px;
     margin-bottom: 4px;
     display: block;
+    margin-top: 20px;
   }
   
   .round-selector select,
@@ -131,18 +141,36 @@
     align-items: center;
     width: 100%;
   }
+
+  .home-logo {
+    width: 150px;
+    height: 150px;
+  }
   
   .room-id {
+    display: flex;
+  }
+  .room-id p{
     background: var(--primary);
-    color: white;
+    color: rgb(255, 255, 255);
     padding: 4px 12px;
     border-radius: 20px;
     font-weight: 500;
+    text-align: center;
+    align-items: center;
+    position: relative;
   }
+  .room-id img {
+    height: 23px;
+    width: 23px;
+    align-self: center;
+  }
+
   
   .timer {
     color: var(--secondary);
     font-weight: bold;
+    text-align: right;
   }
   
   .round-progress {
@@ -179,15 +207,59 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
+    margin-top: 20px;
+    /* border: 2px solid black; */
+    box-shadow: 0 2px 5px #959595;
+    padding: 100px;
+    border-radius: 15px;
+  }
+
+  .word-limit {
+    text-align: right;
+    margin-right: 10px;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px;
   }
   
-  .chain-word {
+  /* .chain-word {
     padding: 10px 16px;
     border-radius: 8px;
     font-weight: bold;
     background: var(--border);
     color: var(--fg);
     transition: transform 0.2s ease;
+  } */
+  .chain-word {
+    position: relative;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-weight: bold;
+    background: var(--border);
+    color: var(--fg);
+  }
+  
+  .delete-word {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e9ddff;
+
+    /* border: 1px solid #d6beff; */
+    border: 1px solid #e9ddff;
+
+    color: #7c3aed;
+    font-size: 10px;
+    padding: 2px 5px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .chain-word.middle {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+
   }
   
   .chain-word.endpoint {
@@ -204,16 +276,28 @@
   .actions {
     display: flex;
     gap: 10px;
-    margin-top: 12px;
+    margin-top: 40px;
     flex-wrap: wrap;
   }
   
   .word-input {
     padding: 10px;
-    border: 1px solid var(--border);
+    border: 1.5px solid #ac7bff;
     border-radius: 6px;
     font-size: 16px;
   }
+
+  .word-input:selection{
+    color: black;
+    background: black;
+  }
+
+  .word-input:hover {
+    /* background: var(--border); */
+    border: 1.5px solid #7627ff;
+  }
+
+
   
   .word-input:disabled {
     background: var(--border);
@@ -231,13 +315,16 @@
   }
   
   .add-btn {
-    background: var(--secondary);
-    color: white;
+    background: rgb(238, 238, 238);
+    box-shadow: 0 2px 5px #6b6b6b;
+    color: rgb(0, 0, 0);
   }
   
   .submit-btn {
     background: var(--primary);
-    color: white;
+    /* border: 2px solid rgb(94, 31, 188); */
+    box-shadow: 0 2px 5px #6b6b6b;
+    color: rgb(255, 255, 255);
   }
   
   .add-btn:disabled, .submit-btn:disabled {
@@ -251,18 +338,34 @@
     font-size: 14px;
   }
   
-  .chat-box {
-    height: 200px;
+  /* .chat-box {
+    height: 400px;
     overflow-y: auto;
     background: var(--bg);
     padding: 10px;
     border-radius: 8px;
     border: 1px solid var(--border);
+  } */
+
+  .chat-box {
+    display: flex;
+    flex-direction: column-reverse; /* Show newest message at bottom */
+    height: 300px;
+    overflow-y: auto;
+    padding: 10px;
+    background: #ffffff;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
   }
   
   .chat-msg {
     margin-bottom: 10px;
     font-size: 14px;
+    box-shadow: 0 2px 2px rgb(143, 143, 143);
+    padding: 10px;
+    border-radius: 5px;
+    background: rgb(189, 189, 255);
+    color:rgb(74, 74, 74);
   }
   
   .timestamp {
@@ -307,6 +410,30 @@
     z-index: 999;
     animation: fadeOut 1.5s ease-in-out forwards;
   }
+
+
+  .players-list {
+    background: rgb(189, 189, 255);
+    /* border: 1px solid var(--border); */
+    border-radius: 17px;
+    /* padding: 10px 10px; */
+    margin-top: 0px;
+    width: 100%;
+  }
+
+  .list-item {
+    margin-left: 13px;
+    margin-right: 13px;
+    margin-bottom: 13px;
+    margin-top: 13px;
+
+
+
+    background: rgb(218, 218, 255);
+    /* border: 1px solid var(--border); */
+    border-radius: 17px;
+    padding: 10px;
+  }
   
   @keyframes fadeOut {
     0% { opacity: 1; }
@@ -314,4 +441,36 @@
     100% { opacity: 0; }
   }
 
+  @keyframes pop-word {
+    0% {
+      transform: scale(0.6);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .pop-animate {
+    animation: pop-word 0.4s ease-out;
+  }
+
+  @keyframes fade-shrink {
+    0% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 0;
+      transform: scale(0.6);
+    }
+  }
+  
+  .fade-out {
+    animation: fade-shrink 0.3s forwards;
+  }
 

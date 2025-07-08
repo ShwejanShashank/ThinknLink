@@ -1,0 +1,94 @@
+:root {
+    --primary: #7000ef;
+    --yellow: #FFD400;
+    --bg: #f9fafb;
+    --text: #1f2937;
+    --card: #ffffff;
+    --accent: #7c3aed;
+    --border: #e5e7eb;
+  }
+  
+  body {
+    background: var(--bg);
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .final-scores-container {
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    background: var(--card);
+    border-radius: 16px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  h1 {
+    font-size: 2.5rem;
+    color: var(--accent);
+  }
+  
+  .winner-box {
+    background: #fef3c7;
+    border-left: 5px solid var(--yellow);
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+  }
+  
+  .winner-box h2 {
+    margin: 0;
+    color: #d97706;
+  }
+  
+  .leaderboard {
+    list-style: none;
+    padding: 0;
+    margin: 30px 0;
+  }
+  
+  .leaderboard-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg);
+    margin-bottom: 12px;
+    padding: 15px 20px;
+    border-radius: 12px;
+    border: 2px solid var(--border);
+    font-size: 1.1rem;
+  }
+  
+  .rank {
+    font-size: 1.5rem;
+    width: 50px;
+  }
+  
+  .player-name {
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .player-score {
+    font-weight: bold;
+    color: var(--accent);
+  }
+  
+  .home-btn {
+    padding: 12px 24px;
+    font-size: 1rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.2s ease;
+  }
+  
+  .home-btn:hover {
+    background: #5b21b6;
+  }
