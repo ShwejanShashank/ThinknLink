@@ -6,7 +6,7 @@ import Results from "./components/Results";
 import FinalScores from "./components/FinalScores";
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5001");
+const socket = io();
 
 const App = () => {
     return (
