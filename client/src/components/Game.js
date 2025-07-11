@@ -1,12 +1,10 @@
 
-
-
-
 // Updated Game.js with copy room ID button and tooltip
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "./Game.css";
 import logo from "./logo.png";
+
 
 const Game = ({ socket }) => {
   const { roomId } = useParams();
@@ -27,6 +25,7 @@ const Game = ({ socket }) => {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState("");
   const [rounds, setRounds] = useState(1);
+  const [duration, setDuration] = useState(30); // default 10s
   const [gameStarted, setGameStarted] = useState(false);
   const [isCreator, setIsCreator] = useState(false);
   const [currentRound, setCurrentRound] = useState(1);
@@ -36,6 +35,28 @@ const Game = ({ socket }) => {
   const MAX_LINKING_WORDS = 15;
   const [lastAddedIndex, setLastAddedIndex] = useState(null);
   const [deletingIndex, setDeletingIndex] = useState(null);
+  const tickAudio = new Audio("/tick.mp3");
+  tickAudio.volume = 1;
+  const submitRef = useRef();
+  const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
+
+
+
+  // useEffect(() => {
+  //   // Push the current route so that back won't navigate away
+  //   navigate(location.pathname, { replace: true });
+
+  //   const handlePopState = () => {
+  //     // Re-push the current route on back navigation
+  //     navigate(location.pathname, { replace: true });
+  //   };
+
+  //   window.addEventListener("popstate", handlePopState);
+
+  //   return () => {
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, [navigate, location.pathname]);
 
   useEffect(() => {
     if (lastAddedIndex !== null) {
@@ -43,6 +64,7 @@ const Game = ({ socket }) => {
       return () => clearTimeout(timeout);
     }
   }, [lastAddedIndex]);
+
 
   const handleCopy = () => {
     navigator.clipboard.writeText(roomId);
@@ -67,24 +89,50 @@ const Game = ({ socket }) => {
     socket.on("update-rounds", ({ rounds }) => setRounds(rounds));
     socket.on("creator", ({ creator }) => setIsCreator(socket.id === creator));
     socket.on("game-started", (wordPair, currentRound) => {
+      
       setWords(wordPair);
       setChain(wordPair);
       setGameStarted(true);
       setCurrentRound(currentRound);
+      // setTimeLeft(duration);
+
     });
     socket.on("chat-history", setChatMessages);
     socket.on("receive-chat-message", (msg) => setChatMessages((prev) => [...prev, msg]));
+    // socket.on("start-timer", (time) => {
+    //   setTimeLeft(time);
+    //   setTimer(
+    //     setInterval(() => {
+    //       setTimeLeft((prev) => {
+    //         if (prev > 1) {
+    //           tickAudio.currentTime = 0; // rewind to start
+    //           tickAudio.play().catch((err) => {}); // handle autoplay restrictions
+    //         }
+    //         if (prev <= 1) {
+    //           clearInterval(timer);
+    //           return 0;
+    //         }
+    //         return prev - 1;
+    //       });
+    //     }, 1000)
+    //   );
+    // });
+
     socket.on("start-timer", (time) => {
       setTimeLeft(time);
-      setTimer(
-        setInterval(() => {
-          setTimeLeft((prev) => {
-            if (prev > 0) return prev - 1;
-            clearInterval(timer);
+      const interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev >1) {
+            return prev - 1;
+          } else if(prev<=1) {
+            clearInterval(interval);
+            submitRef.current?.click();
             return 0;
-          });
-        }, 1000)
-      );
+          }
+        });
+      }, 1000);
+    
+      setTimer(interval); // Keep reference for later clear
     });
     socket.on("next-round", (wordPair) => {
       clearInterval(timer);
@@ -122,9 +170,9 @@ const Game = ({ socket }) => {
     socket.emit("set-rounds", { roomId, rounds: value });
   };
 
-  const startGame = () => {
-    socket.emit("start-game", { roomId });
-  };
+  // const startGame = () => {
+  //   socket.emit("start-game", { roomId });
+  // };
 
 
   const handleKeyPress = (e) => {
@@ -132,8 +180,9 @@ const Game = ({ socket }) => {
   };
 
   const submitChain = () => {
-    socket.emit("submit-chain", { roomId, username, chain });
+    setIsSubmitButtonDisabled(!isSubmitButtonDisabled);
     setSubmitted(true);
+    socket.emit("submit-chain", { roomId, username, chain: chain });
   };
 
   const sendMessage = () => {
@@ -175,12 +224,13 @@ const deleteWordAtIndex = (index) => {
 };
 
 const addWord = () => {
+  setIsSubmitButtonDisabled(false);
   if (!newWord.trim() || submitted) return;
 
   const middleWords = chain.slice(1, -1); // get words between first and last
 
   if (middleWords.length >= MAX_LINKING_WORDS) {
-    alert("You can only add up to 20 linking words!");
+    alert("You can only add up to 15 linking words!");
     return;
   }
 
@@ -245,20 +295,11 @@ const addWord = () => {
 
         {/* <h3 className="chain-title">Word Chain</h3> */}
 
+        {gameStarted && (
+
+
         <div className="chain-box-outline">
         <div className="chain-box">
-          {/* {chain.map((word, idx) => (
-            <React.Fragment key={idx}>
-              <span
-                className={`chain-word ${
-                  idx === 0 || idx === chain.length - 1 ? "endpoint" : "middle"
-                } ${idx === lastAddedIndex ? "pop-animate" : ""}`}
-              >
-                {word}
-              </span>
-              {idx < chain.length - 1 && <span className="arrow">→</span>}
-            </React.Fragment>
-          ))} */}
 
           {chain.map((word, idx) => {
             const isEndpoint = idx === 0 || idx === chain.length - 1;
@@ -285,13 +326,16 @@ const addWord = () => {
 
             
         </div>
-        {gameStarted && (
           <span className="word-limit" style={{ fontSize: '14px', color: 'gray' }}>
-            Linking words: {chain.length > 2 ? chain.length - 2 : 0} / {MAX_LINKING_WORDS}
+            Words Entered: {chain.length > 2 ? chain.length - 2 : 0} Max Limit: {MAX_LINKING_WORDS}
           </span>
-        )}
         
         </div>
+        )}
+
+        {gameStarted && (
+
+
 
         <div className="actions">
           <input
@@ -304,8 +348,9 @@ const addWord = () => {
             disabled={!gameStarted || submitted}
           />
           <button className="add-btn" onClick={addWord} disabled={!gameStarted || submitted}>+ Add Word</button>
-          <button className="submit-btn" onClick={submitChain} disabled={!gameStarted || submitted}>Submit Chain </button>
+          <button ref={submitRef} className="submit-btn" onClick={submitChain} disabled={isSubmitButtonDisabled}>Submit Chain </button>
         </div>
+        )}
         {!gameStarted && isCreator && (
           <div className="round-selector">
             <label align="center"> Set Number of Rounds</label>
@@ -314,7 +359,18 @@ const addWord = () => {
                 <option key={r} value={r}>{r} Rounds</option>
               ))}
             </select>
-            <button className="start-button" onClick={startGame}>Start Game</button>
+            {/* <label style={{ marginTop: "10px" }}>Set Timer Duration (seconds)</label>
+            <select value={duration} onChange={(e) => setDuration(parseInt(e.target.value))}>
+              {[25, 30, 45, 60, 90, 120].map((d) => (
+                  <option key={d} value={d}>{d} seconds</option>
+              ))}
+            </select> */}
+
+            {/*<button className="start-button" onClick={startGame}>Start Game</button>*/}
+            <button className="start-button" onClick={() => socket.emit("start-game", { roomId, duration })}>
+              Start Game
+            </button>
+
           </div>
         )}
 

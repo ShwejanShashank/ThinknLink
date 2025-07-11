@@ -149,12 +149,14 @@
   
   .room-id {
     display: flex;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
   }
   .room-id p{
-    background: var(--primary);
-    color: rgb(255, 255, 255);
+    color: var(--primary);
     padding: 4px 12px;
-    border-radius: 20px;
     font-weight: 500;
     text-align: center;
     align-items: center;
@@ -409,6 +411,23 @@
     font-weight: 600;
     z-index: 999;
     animation: fadeOut 1.5s ease-in-out forwards;
+  }
+
+  .timer-settings {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    color: var(--text);
+  }
+  
+  .timer-settings select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    border: 1px solid var(--accent);
   }
 
 

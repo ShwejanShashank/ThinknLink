@@ -24,6 +24,8 @@ const Results = ({ socket }) => {
 
   const playersList = new URLSearchParams(location.search).get("playersList");
   const currentUsername = localStorage.getItem("username") || "";
+  const [countdown, setCountdown] = useState(10);
+
 
   useEffect(() => {
     socket.emit("get-results", { roomId });
@@ -55,7 +57,7 @@ const Results = ({ socket }) => {
       setGameOver(true);
       setTimeout(() => {
         navigate(`/final-scores/${roomId}`);
-      }, 3000);
+      }, 10000);
     });
 
     return () => {
@@ -68,25 +70,56 @@ const Results = ({ socket }) => {
 
   const handleVote = () => {
     if (!selectedChain) return alert("Please select a chain to vote!");
-    socket.emit("vote", { roomId, votedChain: selectedChain, username: currentUsername });
+    // socket.emit("vote", { roomId, votedChain: selectedChain, username: currentUsername });
+    socket.emit("vote", {
+      roomId,
+      votedChain: selectedChain.chain,
+      votedFor: selectedChain.username,
+      username: currentUsername
+    });
     setVoted(true);
   };
 
+  // useEffect(() => {
+  //   if (revealed) {
+  //     const timeout = setTimeout(() => {
+  //       if (!gameOver) {
+  //         setRevealed(false);
+  //         setSelectedChain(null);
+  //         setVoted(false);
+  //         setUserVotes({});
+  //         setVotes({});
+  //         setIsClicked(true);
+  //         navigate(`/game/${roomId}?is-next-round=true&&old-players-list=${playersList}`);
+  //       }
+  //     }, 10000);
+
+  //     return () => clearTimeout(timeout);
+  //   }
+  // }, [revealed, gameOver, navigate, playersList, roomId]);
+
   useEffect(() => {
     if (revealed) {
-      const timeout = setTimeout(() => {
-        if (!gameOver) {
-          setRevealed(false);
-          setSelectedChain(null);
-          setVoted(false);
-          setUserVotes({});
-          setVotes({});
-          setIsClicked(true);
-          navigate(`/game/${roomId}?is-next-round=true&&old-players-list=${playersList}`);
+      let seconds = 10;
+      setCountdown(seconds);
+      const interval = setInterval(() => {
+        seconds -= 1;
+        setCountdown(seconds);
+        if (seconds === 0) {
+          clearInterval(interval);
+          if (!gameOver) {
+            setRevealed(false);
+            setSelectedChain(null);
+            setVoted(false);
+            setUserVotes({});
+            setVotes({});
+            setIsClicked(true);
+            navigate(`/game/${roomId}?is-next-round=true&&old-players-list=${playersList}`);
+          }
         }
-      }, 10000);
-
-      return () => clearTimeout(timeout);
+      }, 1000);
+  
+      return () => clearInterval(interval);
     }
   }, [revealed, gameOver, navigate, playersList, roomId]);
 
@@ -105,13 +138,14 @@ const Results = ({ socket }) => {
           <ul className="vote-list">
             {shuffledSubmissions.map((sub, index) => {
               const isOwn = sub.username === currentUsername;
-              const isSelected = selectedChain === sub.chain;
+              const isSelected = selectedChain === sub;
               return (
                 <li
                   key={index}
                   className={`vote-item ${isOwn ? "disabled" : isSelected ? "selected" : ""}`}
                   onClick={() => {
-                    if (!voted && !isOwn) setSelectedChain(sub.chain);
+                    // if (!voted && !isOwn) setSelectedChain(sub.chain);
+                    if (!voted && !isOwn) setSelectedChain(sub);
                   }}
                 >
                   <div className="vote-content">
@@ -185,9 +219,9 @@ const Results = ({ socket }) => {
                   <div className="line">
 
                   </div>
-                  {userVotes[sub.chain] && (
+                  {userVotes[sub.username] && (
                     <div className="voted-by">
-                      Voted by: {userVotes[sub.chain].join(", ")} 
+                      Voted by: {userVotes[sub.username].join(", ")} 
                     </div>
 
                     
@@ -196,16 +230,22 @@ const Results = ({ socket }) => {
                   )}
                 </div>
                 <div className="number-of-votes">
-                  <div className="count">{votes[sub.chain] || 0}</div>
-                  <div className="label">{votes[sub.chain] === 1 ? "vote" : "votes"}</div>
+                  <div className="count">{votes[sub.username] || 0}</div>
+                  <div className="label">{votes[sub.username] === 1 ? "vote" : "votes"}</div>
                 </div>
               </li>
 
               
             ))}
           </ul>
-          <div className="next-round-banner">⏱ Next round starting in 10 seconds...</div>
-      
+          {/* <div className="next-round-banner">⏱ Next round starting in 10 seconds...</div>
+       */}
+       {!gameOver && (
+       <div className="next-round-banner">
+        ⏱ Next round starting in {countdown} second{countdown !== 1 ? "s" : ""}...
+      </div>
+       )}
+
         </>
       )}
     </div>
