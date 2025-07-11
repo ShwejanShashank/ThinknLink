@@ -40,6 +40,40 @@ const Game = ({ socket }) => {
   const submitRef = useRef();
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
 
+  const tickAudioRef = useRef(null);
+  const [joinToasts, setJoinToasts] = useState([]);
+
+  useEffect(() => {
+    if (gameStarted && timeLeft === duration) {
+      // Play tick sound only once when timer starts
+      if (tickAudioRef.current) {
+        tickAudioRef.current.play().catch((err) => {
+          console.warn("Audio play blocked or failed:", err);
+        });
+      }
+    }
+  }, [gameStarted, timeLeft, duration]);
+
+  useEffect(() => {
+    socket.on("player-joined", (newPlayer) => {
+      const toastId = Date.now();
+  
+      setJoinToasts((prev) => [
+        ...prev,
+        { id: toastId, name: newPlayer.username },
+      ]);
+  
+      setTimeout(() => {
+        setJoinToasts((prev) => prev.filter((t) => t.id !== toastId));
+      }, 3000);
+    });
+  
+    return () => {
+      socket.off("player-joined");
+    };
+  }, [socket]);
+
+
 
 
   // useEffect(() => {
@@ -122,6 +156,9 @@ const Game = ({ socket }) => {
       setTimeLeft(time);
       const interval = setInterval(() => {
         setTimeLeft((prev) => {
+          tickAudioRef.current.play().catch((err) => {
+            console.warn("Audio play blocked or failed:", err);
+          });
           if (prev >1) {
             return prev - 1;
           } else if(prev<=1) {
@@ -241,6 +278,9 @@ const addWord = () => {
 };
 
   return (
+
+    
+
     <div className="game-container">
       {copied && <div className="copy-toast">Room ID copied!</div>}
       <div className="sidebar">
@@ -293,22 +333,19 @@ const addWord = () => {
           {timeLeft !== null && <span className="timer">⏱ {timeLeft}s</span>}
         </div>
 
+        <div className="toast-container">
+          {joinToasts.map((toast) => (
+            <div key={toast.id} className="toast">
+              👤 {toast.name} joined the room
+            </div>
+          ))}
+        </div>
+
         
-    <h4>🔗 Example Chain:</h4>
-    <div className="example-chain">
-      <span className="chain-word">Phone</span>
-      <span className="arrow">→</span>
-      <span className="chain-word">Charger</span>
-      <span className="arrow">→</span>
-      <span className="chain-word">Battery</span>
-      <span className="arrow">→</span>
-      <span className="chain-word">Energy</span>
-      <span className="arrow">→</span>
-      <span className="chain-word">Power</span>
-    </div>
 
         {/* <h3 className="chain-title">Word Chain</h3> */}
-
+        <audio ref={tickAudioRef} src='/clock_tick_trimmed.mp3' preload="auto" />
+        {/* <audio ref={tickAudioRef} src="https://assets.mixkit.co/active_storage/sfx/2184/2184-preview.mp3" preload="auto" /> */}
         {gameStarted && (
 
 
@@ -387,6 +424,33 @@ const addWord = () => {
 
           </div>
         )}
+
+        {!gameStarted && <div className="game-info-panel">
+          <h4>🧠 How the Game Works</h4>
+          <ul className="info-list">
+            <li><strong>Link the Start and End words</strong> using creative connections.</li>
+            <li><strong>First player to submit</strong> triggers the countdown for others.</li>
+            <li>Everyone must finish their chain <strong>before time runs out</strong>.</li>
+            <li>You can add up to <strong>15 linking words</strong>.</li>
+          </ul>
+
+          <h4>🔗 Example Chain:</h4>
+          <div className="example-chain">
+            <span className="chain-word">Ocean</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Boat</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Sail</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Wind</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Sky</span>
+          </div>
+
+          <p className="highlighted-note">
+            ⚠️ Timer starts the moment <strong>anyone submits</strong>. Be quick and thoughtful!
+          </p>
+        </div>}
 
         {!gameStarted && !isNextRound && <div className="waiting">Waiting for players...</div>}
       </div>

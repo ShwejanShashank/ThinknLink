@@ -149,10 +149,11 @@ const Home = ({ socket }) => {
       return;
     }
     localStorage.setItem("username", username);
-    socket.emit("join-room", { roomId, username }, (res) => {
-      if (!res?.success) return alert(res.message);
-      navigate(`/game/${roomId}?username=${username}`);
-    });
+    // socket.emit("join-room", { roomId, username }, (res) => {
+    //   if (!res?.success) return alert(res.message);
+    //   navigate(`/game/${roomId}?username=${username}`);
+    // });
+    navigate(`/game/${roomId}?username=${username}`);
   };
 
 

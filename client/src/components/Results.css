@@ -15,14 +15,28 @@
     padding: 0;
   } */
   
-  .results-container {
+  /* .results-container {
     max-width: 1000px;
     margin: 40px auto;
     padding: 20px;
     text-align: center;
-    background: transparent;
+    background: rgb(255, 255, 244);
 
+  } */
+
+  .results-container {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 40px 16px;
+    text-align: center;
+
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: rgb(255, 255, 244);
+    scroll-behavior:initial;
   }
+
+  
   
   .results-container h1,
   .results-container h2,
@@ -64,11 +78,12 @@
     overflow-wrap: anywhere;
   } */
 
-  .vote-item {
+  /* .vote-item {
     background-color: #ffffff;
     border-radius: 14px;
     margin-bottom: 15px;
     padding: 14px 20px;
+    padding: 32px 20px;
     font-size: 1.1rem;
     color: black;
     display: flex;
@@ -81,6 +96,26 @@
     flex-wrap: wrap;
     word-wrap: break-word;
     overflow-wrap: anywhere;
+  } */
+
+  .vote-item {
+    background-color: #ffffff;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    /* padding: 14px 20px; */
+    padding: 30px 20px;
+    font-size: 1.1rem;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.399);
+    width: 90%;
+    max-width: 900px;
+    flex-wrap: wrap;
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
   }
 
 
@@ -88,6 +123,7 @@
   .vote-item:hover {
     border: 2px solid rgb(133, 81, 255);
     color: rgb(138, 43, 255);
+    cursor: pointer;
   }
   
   .vote-item.selected {
@@ -97,8 +133,13 @@
   
   .vote-item.disabled {
     opacity: 0.5;
-    pointer-events: none;
   }
+
+  .vote-item.disabled:hover {
+    cursor: not-allowed;
+    border: #00000000;
+  }
+
 
   /* .vote-content {
     display: flex;
@@ -246,17 +287,7 @@
     padding: 5px;
   }
 
-  /* .chain-word-results {
-    position: relative;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-radius: 8px;
-    background: rgb(214, 214, 255);
-    font-size: 0.8rem;
-    color: var(--accent);
-  } */
+
   /* .chain-word-results {
     position: relative;
     padding: 5px 10px;
@@ -266,18 +297,18 @@
     color: var(--accent);
     word-break: break-word;
     max-width: 120px;
-    text-align: center;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+    text-align: center;
   } */
 
   .chain-word-results {
     position: relative;
-    padding: 5px 10px;
+    padding: 8px 14px;
     border-radius: 8px;
     background: rgb(214, 214, 255);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--accent);
     word-break: break-word;
     max-width: 120px;
@@ -285,6 +316,7 @@
     text-overflow: ellipsis;
     white-space: normal;
     text-align: center;
+    align-items: center;
   }
 
 
@@ -323,7 +355,7 @@
   }
 
   .arrow {
-    font-size: 0.85rem;
+    font-size: 1.3rem;
     color: var(--accent);
     margin-left: 4px;
     margin-right: 4px;
