@@ -113,7 +113,7 @@ import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 //import { FaQuestionCircle, FaCommentDots, FaPlus, FaLink, FaPlay } from "react-icons/fa";
 
-import logo2 from "./logo.png";
+import logo2 from "./img.png";
 
 import { FaTwitter, FaInstagram, FaGithub, FaPlay} from "react-icons/fa";
 import "./Home2.css";

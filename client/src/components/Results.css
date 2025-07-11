@@ -32,7 +32,7 @@
     text-align: center;
 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: rgb(255, 255, 244);
+    background:#1c1c2e;
     scroll-behavior:initial;
   }
 
@@ -42,7 +42,7 @@
   .results-container h2,
   .results-container h3 {
     margin: 10px 0;
-    color: black;
+    color: #7a6be4;
   }
   
   .vote-list {

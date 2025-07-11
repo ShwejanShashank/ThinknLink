@@ -1,8 +1,8 @@
 :root {
     --primary: #7000ef;
     --yellow: #FFD400;
-    --bg: #f9fafb;
-    --text: #1f2937;
+    --bg: #1e4367;
+    --text: #d0d6e3;
     --card: #ffffff;
     --accent: #7c3aed;
     --border: #e5e7eb;
@@ -19,7 +19,7 @@
     max-width: 800px;
     margin: 50px auto;
     padding: 30px;
-    background: var(--card);
+    background: #1c1c2e;
     border-radius: 16px;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     text-align: center;

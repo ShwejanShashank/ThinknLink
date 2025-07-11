@@ -1,11 +1,15 @@
 :root {
-    --accent: #7c3aed;
-    --white: #ffffff;
-    --gray-light: #f4f4f5;
-    --gray-dark: #1f2937;
-    --bg-top: #6321b5;
-    --bg-bottom: #1c003b;
-  }
+  --primary: #06FFA5;
+  --secondary: #00D9FF;
+  --accent: #B4F5FF;
+  --bg-dark: #0f0f1f;
+  --text-light: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --blue-powder: #0f172a;
+  --gray-dark: #f8fafc;
+  --gray-light: rgba(255, 255, 255, 0.08);
+}
   
   /* body {
     margin: 0;
@@ -21,8 +25,7 @@
     padding: 40px 16px;
 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom)) !important;
-    scroll-behavior:initial;
+    background: linear-gradient(145deg, #050510, #0f0f1f);
   }
 
 /*   
@@ -93,7 +96,7 @@
     margin: 0 auto 24px auto;
     display: block;
     border-radius: 50%;
-    background: linear-gradient(145deg, #bbe23c, rgb(156, 173, 255));
+    background: linear-gradient(145deg, deeppink,mediumpurple);
     padding: 16px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
     animation: pop-in 0.6s ease forwards;
@@ -110,7 +113,8 @@
   }
   
   .form-card {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     backdrop-filter: blur(6px);
     padding: 30px 24px;
     border-radius: 16px;
@@ -120,7 +124,8 @@
   
   .tabs {
     display: flex;
-    background: var(--gray-light);
+    background: var(--accent);
+    color: var(--text-light);
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 20px;
@@ -149,7 +154,7 @@
     padding: 12px;
     font-size: 16px;
     border-radius: 8px;
-    border: 1px solid mediumpurple;
+    border:1px solid var(--accent);
     margin-bottom: 12px;
     box-sizing: border-box;
   }
@@ -188,7 +193,7 @@
     font-size: 16px;
     font-weight: bold;
     color: white;
-    background: var(--accent);
+    background: var(--primary);
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -262,9 +267,9 @@
     backdrop-filter: blur(8px);
     color: white; */
     background: rgba(192, 192, 192, 0);
-    border: 2px solid rgb(205, 205, 205);
+    border: 2px solid var(--accent);
     backdrop-filter: blur(8px);
-    color: var(-accent);
+
     border-radius: 16px;
     text-align: center;
     padding: 24px;
@@ -278,7 +283,7 @@
   .how-to-play-card .icon {
     font-size: 32px;
     margin-bottom: 12px;
-    color: #facc15; /* yellow */
+    color: var(--primary);
   }
   
   .how-to-play-card h3 {

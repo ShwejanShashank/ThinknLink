@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import "./Game.css";
-import logo from "./logo.png";
+import logo from "./img.png";
 
 
 const Game = ({ socket }) => {
@@ -284,8 +284,7 @@ const addWord = () => {
     <div className="game-container">
       {copied && <div className="copy-toast">Room ID copied!</div>}
       <div className="sidebar">
-      {/* <img src={logo} alt="ThinkNLink Logo" className="home-logo" /> */}
-      <h1>ThinkNLink</h1>
+       <img src={logo} alt="ThinkNLink Logo" className="home-logo" />
         <h2>Players</h2>
         <ul className="players-list">
           {[...players].sort((a, b) => (scores[b] || 0) - (scores[a] || 0)).map((player, i) => (

@@ -1,46 +1,30 @@
 /* Light & Dark Theme Support */
 :root {
-    --bg: #f9fafb;
-    /* --fg: #1f2937; */
-    --card: #ffffff;
-    --primary: #7c3aed;
-    --secondary: #22c55e;
-    --border: #e5e7eb;
-    --gray: #6b7280;
-    --shadow: rgb(206, 206, 206);
-    --muted: #d1d5db;
-    --progress-bg: #e0e0e0;
-    --progress-fill: #7c3aed;
-    --yellow: rgb(244, 193, 66);
-    --blue: #7c3aed;
-  }
-  
-  [data-theme="dark"] {
-    --bg: #18181b;
-    --fg: #f4f4f5;
-    --card: #27272a;
-    --primary: #a78bfa;
-    --secondary: #4ade80;
-    --border: #3f3f46;
-    --gray: #9ca3af;
-    --shadow: rgba(255, 255, 255, 0.05);
-    --muted: #4b5563;
-    --progress-bg: #3f3f46;
-    --progress-fill: #a78bfa;
-  }
-  
-  body {
-    background-color: var(--bg);
-    color: var(--fg);
-    font-family: "Segoe UI", sans-serif;
-    margin: 0;
-    padding: 0;
-    background-image: url('./tomato.png');
-    /* background-size: cover;
-    background-position: center;
-    background-attachment: fixed; */
-    
-  }
+  --bg: #0f0f1f;
+  --fg: #ffffff;
+  --card: #1c1c2e;
+  --primary: #06FFA5;
+  --secondary: #00D9FF;
+  --border: #B4F5FF;
+  --gray: #B4F5FF;
+  --shadow: rgba(6, 255, 165, 0.15);
+  --muted: #7e9fa6;
+  --progress-bg: #1c1c2e;
+  --progress-fill: #06FFA5;
+  --yellow: #facc15;
+  --accent: #B4F5FF;
+  --toast-bg: #06FFA5;
+  --toast-text: #0f0f1f;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: "Segoe UI", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-image: none;
+}
 
   .game-container {
     display: flex;
@@ -51,12 +35,12 @@
     background-color: var(--bg);
     transition: background 0.3s;
     /* background: linear-gradient(180deg, #8a4ff0, #3d127e); */
-    background: white;
+
   }
   
   .sidebar, .chat {
     width: 250px;
-    background: var(--card);
+    background: #1c1c2e;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px var(--shadow);
@@ -85,11 +69,7 @@
     /* margin-bottom: 8px; */
   }
 
-  .sidebar, .chat {
-    /* background: #EFC3F5; */
-    background: white;
-  }
-  
+
   .avatar {
     width: 32px;
     height: 32px;
@@ -133,7 +113,7 @@
   .main {
     flex: 1;
     /* background: rgb(218, 218, 255); */
-    background: white;
+    background: #1c1c2e;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px var(--shadow);
@@ -297,7 +277,7 @@
     font-size: 16px;
   }
 
-  .word-input:selection{
+  .word-input::selection{
     color: black;
     background: black;
   }
@@ -439,12 +419,13 @@
 
 
   .players-list {
-    background: rgb(189, 189, 255);
+    background: #1c1c2e;
     /* border: 1px solid var(--border); */
     border-radius: 17px;
     /* padding: 10px 10px; */
     margin-top: 0px;
     width: 100%;
+    color:mediumpurple;
   }
 
   .list-item {
@@ -465,9 +446,9 @@
     background: rgba(48, 50, 60, 0.055);
     margin-top: 20px;
     border-radius: 12px;
-    box-shadow: 0px 2px 4px rgb(135, 135, 135);
+    box-shadow: 0px 2px 4px rgb(50, 41, 41);
     padding: 20px;
-    color: #555555;
+    color: #e1dada;
     text-align: left;
 }
 
@@ -559,8 +540,8 @@
   }
   
   .toast {
-    background-color: #6366f1;
-    color: white;
+    background-color: #abacea;
+    color: #1e1a1a;
     padding: 10px 18px;
     border-radius: 10px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);

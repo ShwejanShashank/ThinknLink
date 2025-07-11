@@ -1,205 +1,216 @@
-/* Home.css */
+:root {
+  --primary: #06FFA5;
+  --secondary: #00D9FF;
+  --accent: #B4F5FF;
+  --bg-dark: #0f0f1f;
+  --text-light: #ffffff;
+  --glass-bg: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.15);
+}
 
+/* Basic Reset */
 body, html {
-    margin: 0;
-    padding: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to bottom right, #1e3a8a, #6d28d9, #db2777);
-    color: white;
-  }
-  
-  .home-container {
-    position: relative;
-    min-height: 100vh;
-    overflow: hidden;
-  }
-  
-  .floating-layer {
-    position: absolute;
-    inset: 0;
-    opacity: 0.8;
-    pointer-events: none;
-    background: linear-gradient(180deg, rgb(117, 30, 204), rgb(64, 39, 179));
-  }
-  
-  .floating-word {
-    position: absolute;
-    animation: float linear infinite;
-    color: white;
-    font-weight: 500;
-    opacity: 0.3;
-    white-space: nowrap;
-  }
-  
-  @keyframes float {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-20vh); }
-  }
-  
-  .main-content {
-    position: relative;
-    z-index: 10;
-    padding: 40px 20px;
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  
-  .logo-header {
-    margin-bottom: 40px;
-  }
-  
-  .logo-circle {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 20px;
-    background: linear-gradient(to bottom right, #facc15, #f97316, #ec4899);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: pulse 2s infinite;
-    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-  
-  @keyframes pulse {
-    0% { transform: scale(1); opacity: 0.9; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(1); opacity: 0.9; }
-  }
-  
-  .icon {
-    width: 40px;
-    height: 40px;
-    color: white;
-  }
-  
-  .game-title {
-    font-size: 3rem;
-    font-weight: bold;
-  }
-  
-  .gradient-n {
-    background: linear-gradient(to right, #facc15, #f97316);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .subtitle {
-    max-width: 500px;
-    margin: 0 auto;
-    color: #ddd6fe;
-    font-size: 1.1rem;
-  }
-  
-  .card {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 30px 20px;
-    max-width: 400px;
-    margin: 0 auto 40px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  }
-  
-  .tab-buttons {
-    display: flex;
-    background: #f3f4f6;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    overflow: hidden;
-  }
-  
-  .tab {
-    flex: 1;
-    padding: 10px;
-    background: none;
-    border: none;
-    font-weight: 500;
-    cursor: pointer;
-    transition: 0.3s;
-    color: #4b5563;
-  }
-  
-  .tab.active {
-    background: white;
-    color: #7c3aed;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  }
-  
-  .input {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    text-align: center;
-    font-size: 1rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    outline: none;
-  }
-  
-  .input:focus {
-    border-color: #a78bfa;
-  }
-  
-  .action-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    background: linear-gradient(to right, #7c3aed, #3b82f6);
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  
-  .action-button:disabled {
-    background: #a1a1aa;
-    cursor: not-allowed;
-  }
-  
-  .action-button:hover:not(:disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
-  }
-  
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 24px;
-    margin-top: 40px;
-  }
-  
-  .feature {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(145deg, #050510, #0f0f1f);
+  color: var(--text-light);
+  overflow-x: hidden;
+}
+
+/* Floating Word Animation */
+.floating-words {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.float-word {
+  position: absolute;
+  color: var(--accent);
+  opacity: 0.05;
+  animation: float linear infinite;
+  white-space: nowrap;
+  user-select: none;
+}
+
+@keyframes float {
+  from { transform: translateY(100vh); }
+  to { transform: translateY(-20vh); }
+}
+
+/* Main Wrapper */
+.home-wrapper {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Center Container */
+.home-container {
+  z-index: 10;
+  padding-top: 60px;
+  text-align: center;
+}
+.circular-logo {
+  width: 150px;               /* adjust size */
+  height: 150px;
+  border-radius: 50%;         /* makes it a perfect circle */
+  object-fit: cover;          /* crops image inside the circle */
+  border: 4px solid white;    /* optional border */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3); /* optional glow */
+  background: linear-gradient(145deg, #e0b3ff, #c583ff);
+}
+/* Logo */
+.home-logo {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 15px var(--primary));
+}
+
+/* Form Card */
+.form-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  padding: 30px 24px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 0 20px rgba(6, 255, 165, 0.2);
+}
+
+/* Tabs */
+.tabs {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: 600;
+  background: none;
+  color: var(--accent);
+  border: none;
+  transition: 0.3s;
+}
+
+.tab.active {
+  background: var(--primary);
+  color: #000;
+}
+
+/* Inputs */
+.input-username,
+.input-room-id {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  border: 1px solid var(--accent);
+  background: #1c1c2e;
+  color: var(--text-light);
+  text-align: center;
+}
+
+.input-username::placeholder,
+.input-room-id::placeholder {
+  color: #a8b0c4;
+}
+
+/* Submit Button */
+.submit-btn-home {
+  width: 100%;
+  padding: 12px 16px;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  color: black;
+  border: none;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 0 12px rgba(0, 255, 200, 0.3);
+}
+
+.submit-btn-home:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 5px 20px var(--primary);
+}
+
+.submit-btn-home:disabled {
+  background: #444;
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+/* How to Play Section */
+.how-to-play-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 50px 20px;
+  max-width: 1200px;
+  width: 100%;
+  z-index: 10;
+}
+
+.how-to-play-card {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(180, 245, 255, 0.1);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.how-to-play-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 20px rgba(180, 245, 255, 0.3);
+}
+
+.how-to-play-card .icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.how-to-play-card h3 {
+  color: var(--primary);
+  margin-bottom: 10px;
+}
+
+.how-to-play-card p {
+  font-size: 0.95rem;
+  color: #d1d5db;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-card {
     padding: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    text-align: center;
-    color: white;
   }
-  
-  .feature-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 10px;
-    color: #facc15;
-  }
-  
-  .feature h3 {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-  }
-  
-  .feature p {
+
+  .submit-btn-home {
     font-size: 0.95rem;
-    color: #e9d5ff;
   }
+
+  .how-to-play-section {
+    padding: 30px 16px;
+  }
+}
