@@ -621,7 +621,7 @@ const wordCategories = {
         "hotdog", "falafel", "ramen", "pancakes", "waffles",
         "curry", "steak", "salad", "bacon", "meatballs",
         "chicken wings", "fried rice", "mashed potatoes", "spring rolls", "kebab",
-        "lasagna", "butter chicken",
+        "butter chicken",
         "grilled cheese", "omelette", "mac and cheese"
       ],
     fruits: [
@@ -710,8 +710,8 @@ const wordCategories = {
         "Heart", "Lungs", "Brain", "Skin"
     ],
     mythicalCharacters: [
-        "Zeus", "Hercules", "Thor",
-        "Hades", "Jesus", "Buddha"
+        "Hercules", "Thor",
+        "Jesus", "Buddha"
     ],
     comicCharacters: [
         "Superman", "Batman", "Spider-Man", "Iron Man",
