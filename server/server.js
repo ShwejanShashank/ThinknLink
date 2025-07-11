@@ -11,7 +11,7 @@ const io = new Server(server);
 
 var isNextRound = false;
 
-const app = express();
+
 app.use(cors());
 
 
