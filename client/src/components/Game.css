@@ -50,7 +50,8 @@
     box-sizing: border-box;
     background-color: var(--bg);
     transition: background 0.3s;
-    background: linear-gradient(180deg, #8a4ff0, #3d127e);
+    /* background: linear-gradient(180deg, #8a4ff0, #3d127e); */
+    background: white;
   }
   
   .sidebar, .chat {
@@ -63,6 +64,7 @@
     flex-direction: column;
     gap: 12px;
   }
+
   
   .sidebar h2, .chat h3 {
     margin-top: 0px;
@@ -81,6 +83,11 @@
     align-items: center;
     gap: 12px;
     /* margin-bottom: 8px; */
+  }
+
+  .sidebar, .chat {
+    /* background: #EFC3F5; */
+    background: white;
   }
   
   .avatar {
@@ -125,7 +132,8 @@
   
   .main {
     flex: 1;
-    background: var(--card);
+    /* background: rgb(218, 218, 255); */
+    background: white;
     padding: 20px;
     border-radius: 12px;
     box-shadow: 0 4px 10px var(--shadow);

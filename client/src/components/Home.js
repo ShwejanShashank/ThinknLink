@@ -248,30 +248,37 @@ const floatingWordsMemo = useMemo(() => {
 
         </div>
         </div>
-        <div className="how-to-play-section">
-          <div className="how-to-play-card">
-            <div className="icon">🎯</div>
-            <h3>How to Play</h3>
-            <p>Connect words meaningfully to form a smart chain of ideas.</p>
-          </div>
-          <div className="how-to-play-card">
-            <div className="icon">🏆</div>
-            <h3>Social Media</h3>
-            <div className="home-footer">
-              <div className="footer-icons">
-                <FaTwitter />
-                <FaInstagram />
-                <FaGithub />
-              </div>
-            </div>
 
-          </div>
-          <div className="how-to-play-card">
-            <div className="icon">🏆</div>
-            <h3>Victory</h3>
-            <p>Earn votes for your chain and climb the leaderboard!</p>
-          </div>
+
+        <div className="how-to-play-section">
+        <div className="how-to-play-card">
+          <div className="icon">🔗</div>
+          <h3>Connect the Words</h3>
+          <p>
+            Start with a given word and build a meaningful word chain where each word connects logically to the next.
+            Think fast and smart! The goal is to create a clever chain of words that makes sense and flows naturally.
+          </p>
         </div>
+
+        <div className="how-to-play-card">
+          <div className="icon">🗳️</div>
+          <h3>Vote for the Best Chain</h3>
+          <p>
+            Once everyone submits their chains, vote for the best one — except your own! 
+            Pick the chain that’s smart, creative, or just really funny. Your vote helps decide the winner of the round.
+          </p>
+        </div>
+
+        <div className="how-to-play-card">
+          <div className="icon">🏆</div>
+          <h3>Beat Your Friends</h3>
+          <p>
+            Each vote earns points. The player with the most votes wins the round and climbs the leaderboard.
+            Outsmart your friends, gain the most points, and become the ultimate ThinkNLink champion!
+          </p>
+        </div>
+      </div>
+
       </div>
   );
 };

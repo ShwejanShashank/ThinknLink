@@ -293,6 +293,20 @@ const addWord = () => {
           {timeLeft !== null && <span className="timer">⏱ {timeLeft}s</span>}
         </div>
 
+        
+    <h4>🔗 Example Chain:</h4>
+    <div className="example-chain">
+      <span className="chain-word">Phone</span>
+      <span className="arrow">→</span>
+      <span className="chain-word">Charger</span>
+      <span className="arrow">→</span>
+      <span className="chain-word">Battery</span>
+      <span className="arrow">→</span>
+      <span className="chain-word">Energy</span>
+      <span className="arrow">→</span>
+      <span className="chain-word">Power</span>
+    </div>
+
         {/* <h3 className="chain-title">Word Chain</h3> */}
 
         {gameStarted && (

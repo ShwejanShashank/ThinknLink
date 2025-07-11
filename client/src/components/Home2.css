@@ -3,8 +3,8 @@
     --white: #ffffff;
     --gray-light: #f4f4f5;
     --gray-dark: #1f2937;
-    --bg-top: #7f27ea;
-    --bg-bottom: #490096;
+    --bg-top: #6321b5;
+    --bg-bottom: #1c003b;
   }
   
   /* body {
@@ -24,6 +24,7 @@
     background: linear-gradient(to bottom, var(--bg-top), var(--bg-bottom)) !important;
     scroll-behavior:initial;
   }
+
 /*   
   .floating-words {
     position: absolute;
@@ -55,11 +56,11 @@
   @keyframes float {
     0% { 
         transform: translateY(0); 
-        opacity: 0.25;
+        opacity: 0.15;
     }
 
     50%{
-        opacity: 100;
+        opacity: 0.4;
     }
 
     100% { transform: translateY(-30vh);
@@ -130,7 +131,7 @@
     flex: 1;
     padding: 12px;
     font-weight: bold;
-    background: transparent;
+    background: var(--blue-powder);
     border: none;
     cursor: pointer;
     color: var(--gray-dark);
@@ -152,6 +153,7 @@
     margin-bottom: 12px;
     box-sizing: border-box;
   }
+
 
   .input-username:focus {
     outline: none;
