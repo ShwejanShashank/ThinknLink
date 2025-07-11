@@ -809,6 +809,8 @@ io.on("connection", (socket) => {
             return;
         }
 
+        socket.broadcast.to(roomId).emit("player-joined", { username });
+
         rooms[roomId].players[socket.id] = username;
         socket.join(roomId);
 
