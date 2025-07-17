@@ -349,63 +349,7 @@ io.on("connection", (socket) => {
             io.to(roomId).emit("game-started", rooms[roomId].words, rooms[roomId].currentRound+1,rooms[roomId].duration);
         }
     });
-    // socket.on("start-game", ({ roomId, duration }) => {
-    //     if (rooms[roomId] && socket.id === rooms[roomId].creator) {
-    //         const room = rooms[roomId];
-
-    //         room.gameStarted = true;
-    //         room.currentRound = 1;
-    //         room.duration = duration;
-    //         room.words = getRandomWordPair(wordCategories);
-    //         room.submissions = [];
-    //         room.timerStarted = true;
-
-    //         // Notify clients to start game + timer
-    //         io.to(roomId).emit("game-started", room.words, room.currentRound);
-    //         io.to(roomId).emit("start-timer", room.duration);
-
-    //         let countdown = room.duration;
-
-    //         room.timer = setInterval(() => {
-    //             countdown--;
-
-    //             if (
-    //                 countdown === 0 ||
-    //                 room.submissions.length === Object.keys(room.players).length
-    //             ) {
-    //                 clearInterval(room.timer);
-
-    //                 console.log("INSIDE IF COUNTDOWN = 0");
-
-    //                 // Auto-submit for players who missed
-    //                 Object.keys(room.players).forEach((playerId) => {
-    //                     const uname = room.players[playerId];
-    //                     if (!room.submissions.find((s) => s.username === uname)) {
-    //                         room.submissions.push({ username: uname, chain: ["No Submission"] });
-    //                     }
-    //                 });
-
-    //                 console.log("SUBMISSIONS: ", room.submissions);
-
-    //                 // Emit results or next round
-    //                 if (room.currentRound < room.rounds) {
-    //                     room.currentRound++;
-    //                     room.words = getRandomWordPair(wordCategories);
-    //                     // room.submissions = [];
-    //                     room.timerStarted = false;
-    //                     room.votes = {};
-    //                     room.userVotes = {};
-    //                     room.playersVoted = new Set();
-
-    //                     io.to(roomId).emit("next-round", room.words);
-    //                 } else {
-    //                     io.to(roomId).emit("final-scores", room.userScores);
-    //                     io.to(roomId).emit("game-over");
-    //                 }
-    //             }
-    //         }, 1000);
-    //     }
-    // });
+    
 
 
 
@@ -537,93 +481,6 @@ io.on("connection", (socket) => {
 
 
 
-    // socket.on("vote", ({ roomId, votedChain, username }) => {
-    //     if (!rooms[roomId]) return;
-    
-    //     // if (!rooms[roomId].votes) rooms[roomId].votes = {};
-    //     // if (!rooms[roomId].userVotes) rooms[roomId].userVotes = {};
-    //     // if (!rooms[roomId].playersVoted) rooms[roomId].playersVoted = new Set();
-    //     // if (!rooms[roomId].userScores) rooms[roomId].userScores = {};
-    //     // rooms[roomId].userScores = {};
-
-    
-    //     // Store vote count
-    //     if (!rooms[roomId].votes[votedChain]) {
-    //         rooms[roomId].votes[votedChain] = 0;
-    //     }
-    //     rooms[roomId].votes[votedChain]++;
-
-    //     //User Scores
-    //     // if (!rooms[roomId].userScores[username]) {
-    //     //     rooms[roomId].userScores[username] = 0;
-    //     //     console.log("User scores are set to 0");
-    //     // }
-    
-       
-
-
-    
-    //     // Track who voted whom
-    //     if (!rooms[roomId].userVotes[votedChain]) {
-    //         rooms[roomId].userVotes[votedChain] = [];
-    //     }
-    //     rooms[roomId].userVotes[votedChain].push(username);
-    
-    //     // Mark the player as voted
-    //     rooms[roomId].playersVoted.add(username);
-    
-    //     io.to(roomId).emit("vote-update", rooms[roomId].votes);
-    //     io.to(roomId).emit("vote-count", rooms[roomId].playersVoted);
-
-
-    //     console.log("votes: ", rooms[roomId].votes);
-    //     console.log("uservotes: ", rooms[roomId].userVotes);
-    //     console.log("playersvoted: ", rooms[roomId].playersVoted);
-
-    
-    //     // **Only reveal votes once every player has voted**
-    //     if (rooms[roomId].playersVoted.size === Object.keys(rooms[roomId].players).length) {
-
-            
-
-    //         // const scoreMap = {};
-    //         // rooms[roomId].submissions.forEach(item => {
-    //         // scoreMap[item.username] = rooms[roomId].votes[item.chain]*10 || 0;
-    //         // });
-
-    //         // rooms[roomId].userScores = scoreMap;
-
-            
-    //         rooms[roomId].submissions.forEach(item => {
-
-    //             console.log("User Scores:", rooms[roomId].userScores[item.username]);
-
-    //         if(rooms[roomId].currentRound===1)
-    //         rooms[roomId].userScores[item.username] = rooms[roomId].votes[item.chain]*10 || 0;
-    //         else
-    //         rooms[roomId].userScores[item.username] = rooms[roomId].userScores[item.username] + rooms[roomId].votes[item.chain]*10;
-    //         });
-
-            
-           
-            
-    //         setTimeout(() => {
-    //             console.log(rooms[roomId].userScores);
-    //             console.log("Votes: ", rooms[roomId].userVotes)
-    //         }, 1000);
-            
-
-
-    //         io.to(roomId).emit("reveal-votes", rooms[roomId].userVotes, rooms[roomId].userScores);
-
-    //         if(rooms[roomId].currentRound>=rooms[roomId].rounds){
-    //             console.log("Game Over");
-    //             io.to(roomId).emit("game-over");
-                
-    //         }
-    //     }
-    // });
-
     socket.on("vote", ({ roomId, votedChain, votedFor, username }) => {
         if (!rooms[roomId]) return;
       
@@ -683,7 +540,7 @@ io.on("connection", (socket) => {
         }
     });
 
-
+});
 server.listen(5001, () => {
     console.log("Server running on port 5001");
 });
