@@ -26,6 +26,37 @@ const Results = ({ socket }) => {
   const currentUsername = localStorage.getItem("username") || "";
   const [countdown, setCountdown] = useState(10);
 
+  const submittedAudioRef = useRef(null);
+
+
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const chatBoxRef = useRef(null);
+
+  const [sortAnimated, setSortAnimated] = useState(false);
+
+
+  useEffect(() => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const sendMessage = () => {
+    if (chatInput.trim()) {
+      socket.emit("send-chat-message", {
+        roomId,
+        username: currentUsername,
+        message: chatInput,
+        timestamp: new Date().toLocaleTimeString(),
+        type: "user",
+      });
+      setChatInput("");
+    }
+  };
+
+  
+
 
   useEffect(() => {
     socket.emit("get-results", { roomId });
@@ -39,18 +70,48 @@ const Results = ({ socket }) => {
       }
     });
 
-    socket.on("vote-update", setVotes);
-    socket.on("vote-count", (playersVotedCount) => {
-      setPlayersVoted(playersVotedCount.size);
+    socket.on("chat-history", setChatMessages);
+
+    socket.on("receive-chat-message", (msg) => {
+      setChatMessages((prev) => [...prev, msg]);
     });
+
+
+
+    
+
+
+    socket.on("vote-update", setVotes);
+    // socket.on("vote-count", (playersVotedCount) => {
+    //   setPlayersVoted(playersVotedCount.size);
+    // });
+    socket.on("vote-count", (playersVotedSet) => {
+      setPlayersVoted(playersVotedSet);
+      console.log("PLAYERS VOTED: ", playersVoted);
+      // store actual player names
+    });
+
+    // socket.on("reveal-votes", (revealedVotes, userScores) => {
+    //   setUserVotes(revealedVotes);
+    //   setRevealed(true);
+    //   setShuffledSubmissions((prev) =>
+    //     [...prev].sort((a, b) => (votes[b.username] || 0) - (votes[a.username] || 0))
+    //   );
+    //   setScores(userScores);
+    // });
 
     socket.on("reveal-votes", (revealedVotes, userScores) => {
       setUserVotes(revealedVotes);
       setRevealed(true);
-      setShuffledSubmissions((prev) =>
-        [...prev].sort((a, b) => (votes[b.chain] || 0) - (votes[a.chain] || 0))
-      );
       setScores(userScores);
+    
+      // Don't sort immediately
+      setTimeout(() => {
+        setShuffledSubmissions((prev) =>
+          [...prev].sort((a, b) => (votes[b.username] || 0) - (votes[a.username] || 0))
+        );
+        setSortAnimated(true);
+      }, 500); // small delay to emphasize transition
     });
 
     socket.on("game-over", () => {
@@ -60,11 +121,14 @@ const Results = ({ socket }) => {
       }, 10000);
     });
 
+
     return () => {
       socket.off("results");
       socket.off("vote-update");
       socket.off("reveal-votes");
       socket.off("vote-count");
+      socket.off("chat-history");
+      socket.off("receive-chat-message");
     };
   }, [socket, roomId, votes, navigate]);
 
@@ -78,6 +142,18 @@ const Results = ({ socket }) => {
       username: currentUsername
     });
     setVoted(true);
+    socket.emit("send-chat-message", {
+      roomId,
+      username,
+      message: `${currentUsername} has voted`,
+      timestamp: new Date().toLocaleTimeString(),
+      type: "system"
+    });
+    if (submittedAudioRef.current) {
+      submittedAudioRef.current.play().catch((err) => {
+        console.warn("Audio play blocked or failed:", err);
+      });
+    }
   };
 
   // useEffect(() => {
@@ -128,13 +204,24 @@ const Results = ({ socket }) => {
   };
 
   return (
+    
     <div className="results-container">
-      <h1>Voting</h1>
 
+      <div className="results-layout">
+
+
+
+
+
+
+
+      
+      <div className="results-center-column">
+      <h1>Voting</h1>
       {!revealed ? (
         <>
           <h3>Vote for the Best Chain (except yours)</h3>
-
+          <audio ref={submittedAudioRef} src='/submitted.mp3' preload="auto" />
           <ul className="vote-list">
             {shuffledSubmissions.map((sub, index) => {
               const isOwn = sub.username === currentUsername;
@@ -167,6 +254,21 @@ const Results = ({ socket }) => {
             })}
           </ul>
 
+          {/* <div className="voter-status-bar">
+            <h3>Players who voted this round:</h3>
+            <ul className="voter-list">
+              {submissions.map((player, i) => (
+                <li key={i} className="voter-name">
+                  
+                  {playersVoted && playersVoted.includes(player.username) && (
+                    <p></p>
+                  )}
+
+                </li>
+              ))}
+            </ul>
+          </div> */}
+
           <div className="results-buttons">
             {!voted ? (
               <button onClick={handleVote} disabled={!selectedChain}>
@@ -190,7 +292,10 @@ const Results = ({ socket }) => {
           
             {shuffledSubmissions.map((sub, index) => (
 
-                <li key={index} className="result-box">
+                <li
+                key={index}
+                className={`result-box ${sortAnimated ? "revealed" : ""}`}
+                >
                 <div className="result-left">
                   <div className="username">{sub.username}</div>
                   <div className="chain">
@@ -229,10 +334,16 @@ const Results = ({ socket }) => {
                     
                   )}
                 </div>
-                <div className="number-of-votes">
-                  <div className="count">{votes[sub.username] || 0}</div>
-                  <div className="label">{votes[sub.username] === 1 ? "vote" : "votes"}</div>
-                </div>
+
+                {sortAnimated && (
+                  <>
+                    {/* <div className="username">{sub.username}</div> */}
+                    <div className="number-of-votes">
+                      <div className="count">{votes[sub.username] || 0}</div>
+                      <div className="label">{votes[sub.username] === 1 ? "vote" : "votes"}</div>
+                    </div>
+                  </>
+                )}
               </li>
 
               
@@ -243,11 +354,49 @@ const Results = ({ socket }) => {
        {!gameOver && (
        <div className="next-round-banner">
         ⏱ Next round starting in {countdown} second{countdown !== 1 ? "s" : ""}...
-      </div>
+       </div>
        )}
 
         </>
       )}
+
+      </div>
+
+      <div className="chat" align="left">
+        <h3>Chat</h3>
+        <div className="chat-box" ref={chatBoxRef}>
+          {chatMessages.slice().reverse().map((msg, i) => (
+            <div
+              key={i}
+              className={msg.type === "system" ? "chat-msg-system" : "chat-msg-user"}
+            >
+              {msg.type === "system" ? (
+                <>
+                  {msg.message}
+                  <span className="timestamp">{msg.timestamp}</span>
+                </>
+              ) : (
+                <>
+                  <strong>{msg.username}:</strong> {msg.message}
+                  <span className="timestamp">{msg.timestamp}</span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="chat-input">
+          <input
+            type="text"
+            placeholder="Type a message..."
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+          <button onClick={sendMessage}>Send</button>
+        </div>
+      </div>
+
+    </div>
     </div>
   );
 };

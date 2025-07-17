@@ -40,8 +40,17 @@ const Game = ({ socket }) => {
   const submitRef = useRef();
   const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
 
+
   const tickAudioRef = useRef(null);
+  const submittedAudioRef = useRef(null);
+
+
   const [joinToasts, setJoinToasts] = useState([]);
+
+  const [messageType, setMessageType] = useState("user"); 
+
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
 
   useEffect(() => {
     if (gameStarted && timeLeft === duration) {
@@ -73,24 +82,18 @@ const Game = ({ socket }) => {
     };
   }, [socket]);
 
+  // For Getting Window SIze for Mobile layout
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
 
 
-  // useEffect(() => {
-  //   // Push the current route so that back won't navigate away
-  //   navigate(location.pathname, { replace: true });
 
-  //   const handlePopState = () => {
-  //     // Re-push the current route on back navigation
-  //     navigate(location.pathname, { replace: true });
-  //   };
-
-  //   window.addEventListener("popstate", handlePopState);
-
-  //   return () => {
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, [navigate, location.pathname]);
 
   useEffect(() => {
     if (lastAddedIndex !== null) {
@@ -132,25 +135,11 @@ const Game = ({ socket }) => {
 
     });
     socket.on("chat-history", setChatMessages);
-    socket.on("receive-chat-message", (msg) => setChatMessages((prev) => [...prev, msg]));
-    // socket.on("start-timer", (time) => {
-    //   setTimeLeft(time);
-    //   setTimer(
-    //     setInterval(() => {
-    //       setTimeLeft((prev) => {
-    //         if (prev > 1) {
-    //           tickAudio.currentTime = 0; // rewind to start
-    //           tickAudio.play().catch((err) => {}); // handle autoplay restrictions
-    //         }
-    //         if (prev <= 1) {
-    //           clearInterval(timer);
-    //           return 0;
-    //         }
-    //         return prev - 1;
-    //       });
-    //     }, 1000)
-    //   );
-    // });
+    socket.on("receive-chat-message", (msg) => {
+      setChatMessages((prev) => [...prev, msg]);
+      
+      });
+  
 
     socket.on("start-timer", (time) => {
       setTimeLeft(time);
@@ -220,6 +209,18 @@ const Game = ({ socket }) => {
     setIsSubmitButtonDisabled(!isSubmitButtonDisabled);
     setSubmitted(true);
     socket.emit("submit-chain", { roomId, username, chain: chain });
+    socket.emit("send-chat-message", {
+      roomId,
+      username,
+      message: `${username} has submitted`,
+      timestamp: new Date().toLocaleTimeString(),
+      type: "system"
+    });
+    if (submittedAudioRef.current) {
+      submittedAudioRef.current.play().catch((err) => {
+        console.warn("Audio play blocked or failed:", err);
+      });
+    }
   };
 
   const sendMessage = () => {
@@ -229,26 +230,14 @@ const Game = ({ socket }) => {
         username,
         message: chatInput,
         timestamp: new Date().toLocaleTimeString(),
+        type: "user"
       });
       setChatInput("");
+      setMessageType("user");
     }
   };
 
 
-
-// const addWord = () => {
-//   if (!newWord.trim() || submitted) return;
-
-//   const updatedChain = [...chain.slice(0, -1), newWord, chain[chain.length - 1]];
-//   setChain(updatedChain);
-//   setLastAddedIndex(chain.length - 1); // Index of the added middle word
-//   setNewWord("");
-// };
-
-// const deleteWordAtIndex = (index) => {
-//   const updated = chain.filter((_, i) => i !== index);
-//   setChain(updated);
-// };
 
 const deleteWordAtIndex = (index) => {
   setDeletingIndex(index); // trigger animation
@@ -262,6 +251,7 @@ const deleteWordAtIndex = (index) => {
 
 const addWord = () => {
   setIsSubmitButtonDisabled(false);
+
   if (!newWord.trim() || submitted) return;
 
   const middleWords = chain.slice(1, -1); // get words between first and last
@@ -275,14 +265,257 @@ const addWord = () => {
   setChain(updatedChain);
   setLastAddedIndex(chain.length - 1);
   setNewWord("");
+  socket.emit("send-chat-message", {
+    roomId,
+    username,
+    message: `${username} has entered a word`,
+    timestamp: new Date().toLocaleTimeString(),
+    type: "system"
+  });
+
+  setMessageType("system");
 };
 
   return (
 
+
+
     
 
     <div className="game-container">
-      {copied && <div className="copy-toast">Room ID copied!</div>}
+
+        {isMobile ? (
+            // 📱 Mobile Layout
+            <>
+              <div className="game-container-mobile">
+                {copied && <div className="copy-toast">Room ID copied!</div>}
+                <h2>ThinkNLink</h2>
+                <h3 className="players-list">Players</h3>
+                <div className="mobile-players-scroll-wrapper">
+                  <div className="mobile-players-scroll">
+                    {[...players]
+                      .sort((a, b) => (scores[b] || 0) - (scores[a] || 0))
+                      .map((player, i) => (
+                        <div key={i} className="player-pill">
+                          <span className="pill-avatar">{player.charAt(0)}</span>
+                          <span className="pill-name">{player}</span>
+                          <span className="pill-score">{scores[player] || 0} pts</span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+
+                <div className="main">
+        <div className="top-bar">
+
+          <span className="room-id" >
+            <p>Room ID: {roomId} </p>
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAACXBIWXMAAAsTAAALEwEAmpwYAAAAYklEQVR4nGNgGE7Am4GB4QkDA8N/MjFB8JgCw/8TNp4EheQCulvgTWacgILakxgLKImTR8RYQG6Q/celb9QCGBgNIoJgNIgIApqXrv8HjQWPqV3YoQNPMi0BGe5Bhs8HKQAA5qOmsSMWnn4AAAAASUVORK5CYII=" alt="copy"
+          className="click-to-copy" onClick={handleCopy} title="Click to copy"
+          ></img>
+            
+          </span>
+          {/* <div ></div> */}
+
+          {showCannotStartGame && (
+            <div className="modal">
+              <div className="modal-content">
+                <span className="close" onClick={() => setShowCannotStartGame(false)}>&times;</span>
+                <h2>Game cannot be started!</h2>
+                <p>You need atleast 3 players to start the game</p>
+              </div>
+            </div>
+          )}
+
+          
+          {gameStarted && (
+            <span className="round-progress">
+              Round {currentRound} of {rounds}
+              <div className="round-bar">
+                <div className="round-bar-fill" style={{ width: `${(currentRound / rounds) * 100}%` }}></div>
+              </div>
+            </span>
+          )}
+          {timeLeft !== null && <span className="timer">⏱ {timeLeft}s</span>}
+        </div>
+
+        <div className="toast-container">
+          {joinToasts.map((toast) => (
+            <div key={toast.id} className="toast">
+              👤 {toast.name} joined the room
+            </div>
+          ))}
+        </div>
+
+        
+
+        {/* <h3 className="chain-title">Word Chain</h3> */}
+        <audio ref={tickAudioRef} src='/clock_tick_trimmed.mp3' preload="auto" />
+        <audio ref={submittedAudioRef} src='/submitted.mp3' preload="auto" />
+        {/* <audio ref={tickAudioRef} src="https://assets.mixkit.co/active_storage/sfx/2184/2184-preview.mp3" preload="auto" /> */}
+        {gameStarted && (
+
+
+        <div className="chain-box-outline">
+        <div className="chain-box">
+
+          {chain.map((word, idx) => {
+            const isEndpoint = idx === 0 || idx === chain.length - 1;
+            return (
+              <React.Fragment key={idx}>
+                <span
+                  className={`chain-word ${isEndpoint ? 'endpoint' : 'middle'} ${idx === lastAddedIndex ? 'pop-animate' : ''} ${idx === deletingIndex ? 'fade-out' : ''}`}
+                >
+                  {word}
+                  {!isEndpoint && (
+                    <button
+                      className="delete-word"
+                      onClick={() => deleteWordAtIndex(idx)}
+                      title="Delete"
+                    >
+                      X
+                    </button>
+                  )}
+                </span>
+                {idx < chain.length - 1 && <span className="arrow">→</span>}
+              </React.Fragment>
+            );
+          })}
+
+            
+        </div>
+          <span className="word-limit" style={{ fontSize: '14px', color: 'gray' }}>
+            Words Entered: {chain.length > 2 ? chain.length - 2 : 0} Max Limit: {MAX_LINKING_WORDS}
+          </span>
+        
+        </div>
+        )}
+
+        {gameStarted && (
+
+
+
+        <div className="actions">
+          <div className="actions-top">
+
+          
+          <input
+            className="word-input"
+            type="text"
+            placeholder="Add linking word..."
+            value={newWord}
+            onChange={(e) => setNewWord(e.target.value.slice(0, 30))}
+            onKeyDown={handleKeyPress}
+            disabled={!gameStarted || submitted}
+          />
+          <button className="add-btn" onClick={addWord} disabled={!gameStarted || submitted}>+ Add Word</button>
+          </div>
+
+          <button ref={submitRef} className="submit-btn" onClick={submitChain} disabled={isSubmitButtonDisabled}>Submit Chain </button>
+        </div>
+        )}
+        {!gameStarted && isCreator && (
+          <div className="round-selector">
+            <label align="center"> Set Number of Rounds</label>
+            <div className="round-controls">
+              <select value={rounds} onChange={handleSetRounds}>
+                {[1, 2, 3, 4, 5].map((r) => (
+                  <option key={r} value={r}>{r} Rounds</option>
+                ))}
+              </select>
+              <button className="start-button" onClick={() => socket.emit("start-game", { roomId, duration })}>
+                Start Game
+              </button>
+            </div>
+
+          </div>
+        )}
+        {!gameStarted && !isNextRound && 
+        <div className="waiting-indicator">
+        <div className="hourglass-icon">⏳</div>
+        <p className="waiting-text">Waiting for players to join...</p>
+      </div>
+      }
+
+
+        {!gameStarted && <div className="game-info-panel">
+          <h4>🧠 How the Game Works</h4>
+          <ul className="info-list">
+            <li><strong>Link the Start and End words</strong> using creative connections.</li>
+            <li><strong>First player to submit</strong> triggers the countdown for others.</li>
+            <li>Everyone must finish their chain <strong>before time runs out</strong>.</li>
+            <li>You can add up to <strong>15 linking words</strong>.</li>
+          </ul>
+
+          <h4>🔗 Example Chain:</h4>
+          <div className="example-chain">
+            <span className="chain-word">Ocean</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Boat</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Sail</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Wind</span>
+            <span className="arrow">→</span>
+            <span className="chain-word">Sky</span>
+          </div>
+
+          <p className="highlighted-note">
+            ⚠️ Timer starts the moment <strong>anyone submits</strong>. Be quick and thoughtful!
+          </p>
+        </div>}
+
+        {/* {!gameStarted && !isNextRound && <div className="waiting">Waiting for players...</div>} */}
+
+      
+
+
+                </div>
+              
+                <div className="chat">
+                  <h3>Chat</h3>
+                  <div className="chat-box" ref={chatBoxRef}>
+                  
+                    {chatMessages.slice().reverse().map((msg, i) => (
+                      <div
+                        key={i}
+                        className={msg.type === "system" ? "chat-msg-system" : "chat-msg-user"}
+                      >
+                        {msg.type === "system" ? (
+                          <>
+                            {msg.message}
+                            <span className="timestamp">{msg.timestamp}</span>
+                          </>
+                        ) : (
+                          <>
+                            <strong>{msg.username}:</strong> {msg.message}
+                            <span className="timestamp">{msg.timestamp}</span>
+                          </>
+                        )}
+                      </div>
+                    ))}
+
+                  
+
+                  </div>
+                  <div className="chat-input">
+                    <input
+                      type="text"
+                      placeholder="Type a message..."
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+                    />
+                    <button onClick={sendMessage}>Send</button>
+                  </div>
+                </div>
+
+              </div>
+            </>
+          ) : (
+            // 🖥️ Desktop Layout
+            <>
+              {copied && <div className="copy-toast">Room ID copied!</div>}
       <div className="sidebar">
       {/* <img src={logo} alt="ThinkNLink Logo" className="home-logo" /> */}
       <h1>ThinkNLink</h1>
@@ -345,6 +578,7 @@ const addWord = () => {
 
         {/* <h3 className="chain-title">Word Chain</h3> */}
         <audio ref={tickAudioRef} src='/clock_tick_trimmed.mp3' preload="auto" />
+        <audio ref={submittedAudioRef} src='/submitted.mp3' preload="auto" />
         {/* <audio ref={tickAudioRef} src="https://assets.mixkit.co/active_storage/sfx/2184/2184-preview.mp3" preload="auto" /> */}
         {gameStarted && (
 
@@ -410,12 +644,6 @@ const addWord = () => {
                 <option key={r} value={r}>{r} Rounds</option>
               ))}
             </select>
-            {/* <label style={{ marginTop: "10px" }}>Set Timer Duration (seconds)</label>
-            <select value={duration} onChange={(e) => setDuration(parseInt(e.target.value))}>
-              {[25, 30, 45, 60, 90, 120].map((d) => (
-                  <option key={d} value={d}>{d} seconds</option>
-              ))}
-            </select> */}
 
             {/*<button className="start-button" onClick={startGame}>Start Game</button>*/}
             <button className="start-button" onClick={() => socket.emit("start-game", { roomId, duration })}>
@@ -424,6 +652,13 @@ const addWord = () => {
 
           </div>
         )}
+        {!gameStarted && !isNextRound && 
+        <div className="waiting-indicator">
+        <div className="hourglass-icon">⏳</div>
+        <p className="waiting-text">Waiting for players to join...</p>
+      </div>
+      }
+
 
         {!gameStarted && <div className="game-info-panel">
           <h4>🧠 How the Game Works</h4>
@@ -452,7 +687,11 @@ const addWord = () => {
           </p>
         </div>}
 
-        {!gameStarted && !isNextRound && <div className="waiting">Waiting for players...</div>}
+        {/* {!gameStarted && !isNextRound && <div className="waiting">Waiting for players...</div>} */}
+
+      
+
+
       </div>
 
       
@@ -460,19 +699,28 @@ const addWord = () => {
       <div className="chat">
         <h3>Chat</h3>
         <div className="chat-box" ref={chatBoxRef}>
-          {/* {chatMessages.map((msg, i) => (
-            <div key={i} className="chat-msg">
-              <strong>{msg.username}:</strong> {msg.message}
-              <span className="timestamp">{msg.timestamp}</span>
-            </div>
-          ))} */}
-
+        
           {chatMessages.slice().reverse().map((msg, i) => (
-            <div key={i} className="chat-msg">
-              <strong>{msg.username}:</strong> {msg.message}
-              <span className="timestamp">{msg.timestamp}</span>
+            <div
+              key={i}
+              className={msg.type === "system" ? "chat-msg-system" : "chat-msg-user"}
+            >
+              {msg.type === "system" ? (
+                <>
+                  {msg.message}
+                  <span className="timestamp">{msg.timestamp}</span>
+                </>
+              ) : (
+                <>
+                  <strong>{msg.username}:</strong> {msg.message}
+                  <span className="timestamp">{msg.timestamp}</span>
+                </>
+              )}
             </div>
           ))}
+
+         
+
         </div>
         <div className="chat-input">
           <input
@@ -485,6 +733,16 @@ const addWord = () => {
           <button onClick={sendMessage}>Send</button>
         </div>
       </div>
+            </>
+          )}
+
+
+
+
+
+
+
+    
     </div>
   );
 };

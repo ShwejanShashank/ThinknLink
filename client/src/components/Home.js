@@ -1,124 +1,23 @@
 
 
 
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { v4 as uuidv4 } from "uuid";
-// import "./Home3.css";
-// import logo from "./logo.png";
-// import { FaTwitter, FaInstagram, FaGithub, FaQuestionCircle, FaCommentDots } from "react-icons/fa";
-
-// const Home = ({ socket }) => {
-//   const [username, setUsername] = useState("");
-//   const [roomId, setRoomId] = useState("");
-//   const [showHowToPlay, setShowHowToPlay] = useState(false);
-//   const [showFeedback, setShowFeedback] = useState(false);
-//   const navigate = useNavigate();
-
-//   const createRoom = () => {
-//     if (!username) return alert("Enter your name!");
-//     localStorage.setItem("username", username);
-//     const newRoomId = uuidv4().slice(0, 6);
-//     socket.emit("create-room", { roomId: newRoomId, username });
-//     navigate(`/game/${newRoomId}?username=${username}`);
-//   };
-
-//   const joinRoom = () => {
-//     if (!username || !roomId) {
-//       alert("Enter name and room ID!");
-//       return;
-//     }
-//     localStorage.setItem("username", username);
-//     socket.emit("join-room", { roomId, username }, (response) => {
-//       if (response && !response.success) {
-//         alert(response.message);
-//         return;
-//       }
-//       navigate(`/game/${roomId}?username=${username}`);
-//     });
-//   };
-
-//   return (
-//     <div className="home-container">
-//       {/* <img src={logo} alt="ThinkNLink Logo" className="home-logo" /> */}
-//       <h1>ThinkNLink</h1>
-//       <div className="username-block glass-card">
-//         <input
-//           id="username"
-//           type="text"
-//           placeholder="Enter your name"
-//           value={username}
-//           onChange={(e) => setUsername(e.target.value)}
-//           className="username-input"
-//         />
-//       </div>
-
-//       <div className="home-card glass-card">
-//         <button onClick={createRoom} className="create-room primary-button">Create Room</button>
-//         <p className="or-text">OR</p>
-//         <input
-//           type="text"
-//           placeholder="Enter Room ID"
-//           value={roomId}
-//           onChange={(e) => setRoomId(e.target.value)}
-//           className="home-input"
-//         />
-//         <button onClick={joinRoom} className="join-room secondary-button">Join Room</button>
-//       </div>
-
-//       <div className="home-footer">
-//         <div className="footer-icons">
-//           <FaTwitter />
-//           <FaInstagram />
-//           <FaGithub />
-//         </div>
-//         <div className="footer-buttons">
-//           <button onClick={() => setShowHowToPlay(true)} className="footer-button">
-//             <FaQuestionCircle /> How to Play
-//           </button>
-//           <button onClick={() => setShowFeedback(true)} className="footer-button">
-//             <FaCommentDots /> Feedback
-//           </button>
-//         </div>
-//       </div>
-
-//       {showHowToPlay && (
-//         <div className="modal">
-//           <div className="modal-content">
-//             <span className="close" onClick={() => setShowHowToPlay(false)}>&times;</span>
-//             <h2>How to Play</h2>
-//             <p>[Your content here]</p>
-//           </div>
-//         </div>
-//       )}
-
-//       {showFeedback && (
-//         <div className="modal">
-//           <div className="modal-content">
-//             <span className="close" onClick={() => setShowFeedback(false)}>&times;</span>
-//             <h2>Feedback</h2>
-//             <p>[Your content here]</p>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default Home;
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
-//import { FaQuestionCircle, FaCommentDots, FaPlus, FaLink, FaPlay } from "react-icons/fa";
 
 import logo2 from "./logo.png";
 
-import { FaTwitter, FaInstagram, FaGithub, FaPlay} from "react-icons/fa";
 import "./Home2.css";
 
 import { useMemo } from "react";
+
+import { FaInstagram, FaTwitter, FaCommentDots, FaPlay } from "react-icons/fa";
+import emailjs from "emailjs-com";
+
+const getSeededValue = (index, max) => {
+  const seed = Math.random() * 10000;
+  return Math.abs(seed % 1) * max;
+};
 
 
 
@@ -128,6 +27,44 @@ const Home = ({ socket }) => {
   const [username, setUsername] = useState("");
   const [roomId, setRoomId] = useState("");
   const navigate = useNavigate();
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  const sendFeedback = (e) => {
+    e.preventDefault();
+    const templateParams = {
+      message: feedback,
+    };
+
+    emailjs
+      .send(
+        "service_1cukvag", // Replace from EmailJS dashboard
+        "template_rt6n7qa", // Replace from EmailJS dashboard
+        templateParams,
+        "J7H0jXDxRy9wdyw_X" // Replace from EmailJS dashboard (public key)
+      )
+      .then(
+        (result) => {
+          alert("Feedback sent successfully!");
+          setFeedback("");
+          setShowPopup(false);
+        },
+        (error) => {
+          alert("Failed to send feedback.");
+          console.error(error.text);
+        }
+      );
+  };
+
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    else if(socket.connected){
+      socket.disconnect();
+    }
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -145,16 +82,16 @@ const Home = ({ socket }) => {
 
   const joinRoom = () => {
     if (!username || !roomId) {
-      alert("Enter name and room ID!");
+      alert("Enter Name AND Room ID!");
       return;
     }
     localStorage.setItem("username", username);
-    // socket.emit("join-room", { roomId, username }, (res) => {
-    //   if (!res?.success) return alert(res.message);
-    //   navigate(`/game/${roomId}?username=${username}`);
-    // });
-    navigate(`/game/${roomId}?username=${username}`);
+    socket.emit("join-room-validation", { roomId, username }, (res) => {
+      if (!res?.success) return alert(res.message);
+      navigate(`/game/${roomId}?username=${username}`);
+    });
   };
+
 
 
   const handleKeyPress = (e) => {
@@ -175,17 +112,16 @@ const floatingWordsMemo = useMemo(() => {
     "Island Volcano Forest Lake Sink Stove Fridge Magazine Notebook Album Coin Paint Frame Shelf Cupboard " +
     "Remote Ladder Globe Kite Toy Basket Bat Drum Microphone Curtain Mat Tent Balloons Statue"
   ).split(" ");
-  return Array.from({ length: 120 }).map((_, index) => ({
+  return Array.from({ length: 150 }).map((_, index) => ({
     id: index,
     word: words[index % words.length],
     style: {
-      left: `${Math.random() * 100}%`,
-      top: `${Math.random() * 100}%`,
-      fontSize: `${10 + Math.random() * 20}px`,
-      animationDuration: `${15 + Math.random() * 25}s`,
-      // animationDelay: `${index * 0}s`,
-      animationDelay: `${Math.random() * 0.0}s`
-    },
+      left: `${getSeededValue(index, 90) + 5}%`,  // stays between 5% and 95%
+      top: `${getSeededValue(index + 200, 90) + 5}%`,
+      fontSize: `${9 + getSeededValue(index + 400, 20)}px`,
+      animationDuration: `${15 + getSeededValue(index + 600, 25)}s`,
+      animationDelay: `-${15 + getSeededValue(index + 800, 30)}s`
+    }
   }));
 }, []);
 
@@ -239,17 +175,50 @@ const floatingWordsMemo = useMemo(() => {
                 />
             )}
 
+
             <button
                 className="submit-btn-home"
                 onClick={mode === "create" ? createRoom : joinRoom}
-                disabled={!username.trim() || (mode === "join" && !roomId.trim())}
+                
+                
             >
               <FaPlay className="icon" /> {mode === "create" ? "Create Room" : "Join Room"}
             </button>
 
         </div>
-        </div>
+        
 
+        <div className="icon-bar">
+        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+          <FaTwitter className="icon twitter" />
+        </a>
+        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+          <FaInstagram className="icon instagram" />
+        </a>
+        <button className="feedback-btn" onClick={() => setShowPopup(true)}>
+          <FaCommentDots className="icon feedback" /> Feedback
+        </button>
+      </div>
+
+      {showPopup && (
+        <div className="feedback-popup">
+          <form onSubmit={sendFeedback}>
+            <textarea
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              placeholder="Enter your feedback..."
+              required
+            />
+            <p className="feedback-cancel" onClick={() => setShowPopup(false)}>×</p>
+            <div className="popup-buttons">
+              <button type="submit" className="feedback-submit">Submit</button>
+              
+            </div>
+          </form>
+        </div>
+      )}
+
+</div>
 
         <div className="how-to-play-section">
         <div className="how-to-play-card">

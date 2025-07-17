@@ -13,13 +13,14 @@
     font-family: "Segoe UI", sans-serif;
     margin: 0;
     padding: 0;
+    background: white;
   }
   
   .final-scores-container {
     max-width: 800px;
     margin: 50px auto;
     padding: 30px;
-    background: var(--card);
+    background: white;
     border-radius: 16px;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     text-align: center;
