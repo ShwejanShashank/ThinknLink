@@ -11,12 +11,12 @@ import Results from "./components/Results";
 import { io } from "socket.io-client";
 import FinalScores from "./components/FinalScores";
 //for render.com
-// const socket = io({
-//     autoConnect: false,
-// });
-const socket = io("http://localhost:5001", {
-    autoConnect: false, // important
-    });
+const socket = io({
+    autoConnect: false,
+});
+// const socket = io("http://localhost:5001", {
+//     autoConnect: false, // important
+//     });
 
 
 
