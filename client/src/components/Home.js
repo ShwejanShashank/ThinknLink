@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
-import logo2 from "./logo.png";
+import logo2 from "./img.png";
 
 import "./Home2.css";
 
