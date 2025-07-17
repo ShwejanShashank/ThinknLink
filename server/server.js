@@ -584,7 +584,7 @@
 const express = require("express");
 const http = require("http");
 const { Server } = require("socket.io");
-const cors = require("cors");
+const cors = require("cors"); 
 
 var isNextRound = false;
 
@@ -794,7 +794,7 @@ io.on("connection", (socket) => {
         io.to(socket.id).emit("chat-history", rooms[roomId].chat);
     });
 
-    socket.on("join-room", ({ roomId, username }, callback) => {
+    socket.on("join-room-validation", ({ roomId, username }, callback) => {
         if (!rooms[roomId]) {
             if (typeof callback === "function") {
                 callback({ success: false, message: "Invalid Room ID! Room does not exist." });
@@ -808,8 +808,30 @@ io.on("connection", (socket) => {
             }
             return;
         }
-
         socket.broadcast.to(roomId).emit("player-joined", { username });
+
+        if (typeof callback === "function") {
+            callback({ success: true });
+        }
+    });
+    
+
+    socket.on("join-room", ({ roomId, username }, callback) => {
+        // if (!rooms[roomId]) {
+        //     if (typeof callback === "function") {
+        //         callback({ success: false, message: "Invalid Room ID! Room does not exist." });
+        //     }
+        //     return;
+        // }
+
+        // if (rooms[roomId].gameStarted) {
+        //     if (typeof callback === "function") {
+        //         callback({ success: false, message: "Game has already started. You can't join this room now." });
+        //     }
+        //     return;
+        // }
+
+        
 
         rooms[roomId].players[socket.id] = username;
         socket.join(roomId);
@@ -866,10 +888,10 @@ io.on("connection", (socket) => {
     //     io.to(roomId).emit("receive-chat-message", chatMessage);
     // });
 
-    socket.on("send-chat-message", ({ roomId, username, message, timestamp }) => {
+    socket.on("send-chat-message", ({ roomId, username, message, timestamp, type }) => {
         if (!rooms[roomId]) return;
     
-        const chatMessage = { username, message, timestamp };
+        const chatMessage = { username, message, timestamp, type };
         rooms[roomId].chat.push(chatMessage);
     
         io.to(roomId).emit("receive-chat-message", chatMessage);
@@ -1081,6 +1103,7 @@ io.on("connection", (socket) => {
         console.log("Room ID: ", rooms[roomId]);
         if (rooms[roomId]) {
             io.to(socket.id).emit("results", rooms[roomId].submissions);
+            io.to(socket.id).emit("chat-history", rooms[roomId].chat);
         }
     });
 
